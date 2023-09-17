@@ -44,7 +44,7 @@ http://localhost:8095
 # Springdoc Openapi URL
 http://localhost:8095/webjars/swagger-ui/index.html#/
 
-![01](https://github.com/kasra-haghpanah/spring-rsocket-with-rsocket-js/assets/53397941/247f090d-b99e-49fc-8a24-c040137f91a4)
+![01](https://github.com/kasra-haghpanah/spring-rsocket-with-rsocketjs/assets/53397941/8eec1f1d-deb4-4a1b-be87-fd58194cde1c)
 
 
 # Features
