@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html ng-app="demoApp" lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <!--    <meta name="_csrf" th:content="${_csrf.token}"/>
+        &lt;!&ndash; default header name is X-CSRF-TOKEN &ndash;&gt;
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+
+
+    <meta charset="UTF-8">
+    <meta name="author" content="kasra haghpanah"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{'ElectionWebSite' | translate}}</title>
+    <link rel="shortcut icon" href="/images/favicon.ico"/>
+    <link media="all" href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link media="all" href="/css/docs.min.css" rel="stylesheet"/>
+    <!--  https://gist.github.com/planetoftheweb/5d75a1ad45eb3059710747a3695fc068#file-glyphicons-css -->
+    <link media="all" href="/css/glyphicons.css" rel="stylesheet"/>
+    <link href="/custom/fullscreen.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="/js/html5.js"></script>
+    <script type="text/javascript" src="/lib/angular.js"></script>
+    <script type="text/javascript" src="/lib/angular-route.js"></script>
+    <script type="text/javascript" src="/lib/angular-resource.js"></script>
+    <script type="text/javascript" src="/lib/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/js/config.js"></script>
+    <script type="text/javascript" src="/js/controller.js"></script>
+    <script type="text/javascript" src="/js/directive.js"></script>
+    <script type="text/javascript" src="/js/treeview.js"></script>
+    <script type="text/javascript" src="/js/rsocket.js"></script>
+    <script type="text/javascript" src="/js/rsocket-extension.js"></script>
+
+
+</head>
+<body dir={{dir}} class="{{dir}}">
+
+<div ng-if="modal" class="bd-example bd-example-modal"
+     style="width: 100%;height: 100%;z-index: 100;position: fixed;top: -20px;opacity: 0.8;background-color: black;">
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document" style="opacity:1;height: 80%;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:{{color}};color: white;">
+                    <h5 ng-if="!$root.isSettings" id="metadata" class="modal-title">{{'Upload'| translate}}</h5>
+                    <h5 ng-if="$root.isSettings" class="modal-title">{{'Settings'| translate}}</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="background-color: {{color}};"
+                            ng-disabled="isUploading == true"
+                            ng-click="openModel()"
+                    >
+                        {{'Close' | translate}}
+                    </button>
+                    <!--  ng-disabled="text =='' || title == '' || file == null || isUploading == true" -->
+                    <button ng-if="!$root.isSettings && $root.hasFile"
+                            type="button" class="btn btn-primary"
+                            style="background-color: {{color}};"
+
+                            ng-click="upload()">{{'Send' | translate}}
+                    </button>
+                    <button ng-if="!$root.isSettings && !$root.hasFile"
+                            type="button" class="btn btn-primary"
+                            style="background-color: {{color}}"
+                            ng-disabled="text =='' || title == '' "
+                            ng-click="updateMessage()">{{'Send' | translate}}
+                    </button>
+
+                    <button ng-if="$root.isSettings"
+                            type="button" class="btn btn-primary"
+                            style="background-color: {{color}}"
+                            ng-click="editUserMetadata()">{{'Save' | translate}}
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <div ng-if="!$root.isSettings" class="row col-12 h-100 d-inline-block">
+
+                        <div class="row col-12">
+                            <div id="media" class="col-6 h-50">&nbsp;</div>
+
+                            <div class="col-6 h5">
+                                <input id="formTitle" class="row col-12 form-control" type="text" ng-model="$root.title"
+                                       maxlength="{{$root.maxLength}}"
+                                       placeholder="{{'Title' | translate}}">
+                                <textarea id="formText" rows="10" class="row col-12 form-control bg-white"
+                                          maxlength="{{$root.maxLength}}"
+                                          ng-model="$root.text" placeholder="{{'Text' | translate}}"></textarea>
+                                <input ng-if="$root.hasFile" class="row col-12 form-control form-control-lg"
+                                       id="formFileLg" type="file"
+                                       placeholder="{{'SelectFile' | translate}}"
+                                       onchange="angular.element(this).scope().changeFile(this)"/>
+                            </div>
+                        </div>
+
+
+                        <div class="row progress col-12">
+                            <div class="progress-bar" role="progressbar" style="width: {{uploadPercent}}%;background-color: {{$root.color}}"
+                                 aria-valuenow="{{uploadPercent}}" aria-valuemin="0" aria-valuemax="100">
+                                {{uploadPercent}}%
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div ng-if="$root.isSettings" class="row col-12 h-100 d-inline-block">
+
+                        <label class="row col-6 h5" >{{'Language' | translate}}</label>
+                        <select class="row col-6 h5" ng-model="$root.languageKey" onchange="window.changeLanguage(this)">
+                            <option selected="selected" value="fa">{{'BUTTON_LANG_FA' | translate}}</option>
+                            <option value="en">{{'BUTTON_LANG_EN' | translate}}</option>
+                        </select>
+
+                        <label class="row col-6 h5" >{{'TreeType' | translate}}</label>
+                        <select ng-model="$root.treeType" class="row col-6 form-control">
+                            <option ng-repeat="treeType in $root.treeTypes" value="{{treeType}}">{{treeType}}</option>
+                        </select>
+
+                        <label class="row col-6 h5" >{{'Theme' | translate}}</label>
+                        <input type="color" ng-model="$root.color" class="row col-6 form-control">
+
+                        </span>
+
+                        <label class="row col-6 h5" >{{'ShowDottedLine' | translate}}</label>
+                        <select ng-model="$root.showLine" class="row col-6 form-control">
+                            <option ng-repeat="showLine in $root.showLineOptions" value="{{showLine}}">{{showLine}}
+                            </option>
+                        </select>
+
+                        <label class="row col-6 h5" >{{'TreeSize' | translate}}</label>
+                        <select ng-model="$root.treeSize" class="row col-6 form-control">
+                            <option ng-repeat="option in $root.options" value="{{option}}">{{option}}</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<div>
+
+
+    <button ng-click="changeLanguage('fa')" translate="BUTTON_LANG_FA" type="button" class="btn btn-success"></button>
+    <button ng-click="changeLanguage('en')" translate="BUTTON_LANG_EN" type="button" class="btn btn-success"></button>
+
+
+    <a href="#" alt="er">logout</a>
+
+</div>-->
+
+<div>
+    <div class="bd-example" ng-if="location.path() == '/tree' || location.path() == '/content'">
+        <ul class="nav nav-tabs">
+
+            <!--            <li class="nav-item dropdown-submenu" >
+                            <a  class="dropdown-item{{dir=='rtl'?'-right text-right':''}}" tabindex="-1" href="/#!{{location.path()}}" ng-click="showDropDown()">Hover me for more options</a>
+                            <ul class="dropdown-menu{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}">
+                                <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a tabindex="-1" href="/#!{{location.path()}}" >Second level</a></li>
+                                <li class="dropdown-submenu{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}" ng-click="showDropDown()">
+                                    <a class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}" href="/#!{{location.path()}} {{isShowDropDown == true ?'show':''}}">Even More..</a>
+                                    <ul class="dropdown-menu{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}} ">
+                                        <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">3rd level</a></li>
+                                        <li class="dropdown-submenu{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}">
+                                            <a class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}" href="/#!{{location.path()}}">another level</a>
+                                            <ul class="dropdown-menu{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}">
+                                                <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">4th level</a></li>
+                                                <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">4th level</a></li>
+                                                <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">4th level</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">3rd level</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">Second level</a></li>
+                                <li class="dropdown-item{{dir=='rtl'?'-right text-right':''}} {{isShowDropDown == true ?'show':''}}"><a href="/#!{{location.path()}}">Second level</a></li>
+                            </ul>
+                        </li>-->
+
+            <li ng-if="level >-1" class="nav-item">
+                <a class="nav-link" href="/#!{{location.path()}}" ng-click="openModel('Settings')">{{'Settings' | translate}}</a>
+            </li>
+            <li class="nav-item">
+                <a ng-class="location.path() == '/tree' ? 'nav-link active':'nav-link'" href="/#!/tree">{{'UsersManagement'
+                    | translate}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="location.path() == '/content' ? 'nav-link active':'nav-link'"
+                   href="/#!/content">{{'Content' | translate}}</a>
+            </li>
+            <li ng-if="level==0" class="nav-item">
+                <a class="nav-link" href="/#!{{location.path()}}" ng-click="openModel()">{{'Upload' | translate}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout" ng-click="openModel()">{{'Logout' | translate}}</a>
+            </li>
+        </ul>
+    </div>
+
+    <div ng-view=""></div>
+</div>
+
+
+</body>
+</html>
