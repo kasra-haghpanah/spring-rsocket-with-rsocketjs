@@ -2,7 +2,7 @@
 
 # Notice
 
-This application works on Spring 3.0.0 or later and JDK 17 or later
+This application works on Spring boot 3.0.0 or later and JDK 17 or later
 
 ```xml
 <parent>
