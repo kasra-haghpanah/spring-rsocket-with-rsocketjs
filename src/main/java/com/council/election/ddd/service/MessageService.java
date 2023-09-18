@@ -63,75 +63,76 @@ public class MessageService {
 
     public Flux<MessageDTO> messageJoinUserAndFile() {
 
-        String nativeQuery = "[\n" +
-                "    {\n" +
-                "        \"$lookup\": {\n" +
-                "            \"from\": \"user\",\n" +
-                "            \"let\": {\"authorPhone\": \"$authorPhone\", \"fileId\": \"$fileId\"},\n" +
-                "            \"pipeline\": [\n" +
-                "                {\"$match\": {\"$expr\": {\"$eq\": [\"$username\", \"$$authorPhone\"]}}},\n" +
-                "                {\n" +
-                "                    \"$lookup\": {\n" +
-                "                        \"from\": \"fs.files\",\n" +
-                "                        \"let\": {\"id\": \"$_id\"},\n" +
-                "                        \"pipeline\": [\n" +
-                "                            {\"$match\": {\"$expr\": {\"$eq\": [\"$$fileId\", \"$_id\"]}}}\n" +
-                "                        ],\n" +
-                "                        \"as\": \"file\"\n" +
-                "                    }\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"$unwind\":\n" +
-                "                        {\n" +
-                "                            \"path\": \"$file\",\n" +
-                "                            \"includeArrayIndex\": \"index\",\n" +
-                "                            \"preserveNullAndEmptyArrays\": true  // if is true for left join\n" +
-                "                        }\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"$project\": {\n" +
-                "                        \"_id\": 0,\n" +
-                //  "                        \"userId\": {\"$toString\": \"$_id\"},\n" +
-                "                        \"firstName\": \"$first_name\",\n" +
-                "                        \"lastName\": \"$last_name\",\n" +
-                "                        \"fileId\": {\"$toString\":\"$file._id\"},\n" +
-                "                        \"filename\": \"$file.filename\",\n" +
-                "                        \"size\": \"$file.length\",\n" +
-                "                        \"contentType\": \"$file.metadata._contentType\",\n" +
-                "                        \"duration\": \"$file.metadata._duration\"\n" +
-                "                    }\n" +
-                "                }\n" +
-                "            ],\n" +
-                "            \"as\": \"user\"\n" +
-                "        }\n" +
-                "    },\n" +
-                "\n" +
-                "    {\n" +
-                "        \"$unwind\":\n" +
-                "            {\n" +
-                "                \"path\": \"$user\",\n" +
-                "                \"includeArrayIndex\": \"index\",\n" +
-                "                \"preserveNullAndEmptyArrays\": true  // if is true for left join\n" +
-                "            }\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"$project\": {\n" +
-                "            \"_id\": 0,\n" +
-                "            \"id\": {\"$toString\": \"$_id\"},\n" +
-                "            \"firstName\": \"$user.firstName\",\n" +
-                "            \"lastName\": \"$user.lastName\",\n" +
-                "            \"title\": \"$title\",\n" +
-                "            \"text\": \"$text\",\n" +
-                "            \"phone\": \"$authorPhone\",\n" +
-                "            \"fileId\": \"$user.fileId\",\n" +
-                "            \"filename\": \"$user.filename\",\n" +
-                "            \"size\": \"$user.size\",\n" +
-                "            \"contentType\": \"$user.contentType\",\n" +
-                "            \"duration\": \"$user.duration\"\n" +
-                "        }\n" +
-                "    }\n" +
-                "\n" +
-                "]";
+        String nativeQuery = """
+                [
+                    {
+                        "$lookup": {
+                            "from": "user",
+                            "let": {"authorPhone": "$authorPhone", "fileId": "$fileId"},
+                            "pipeline": [
+                                {"$match": {"$expr": {"$eq": ["$username", "$$authorPhone"]}}},
+                                {
+                                    "$lookup": {
+                                        "from": "fs.files",
+                                        "let": {"id": "$_id"},
+                                        "pipeline": [
+                                            {"$match": {"$expr": {"$eq": ["$$fileId", "$_id"]}}}
+                                        ],
+                                        "as": "file"
+                                    }
+                                },
+                                {
+                                    "$unwind":
+                                        {
+                                            "path": "$file",
+                                            "includeArrayIndex": "index",
+                                            "preserveNullAndEmptyArrays": true  // if is true for left join
+                                        }
+                                },
+                                {
+                                    "$project": {
+                                        "_id": 0,
+                                        "firstName": "$first_name",
+                                        "lastName": "$last_name",
+                                        "fileId": {"$toString":"$file._id"},
+                                        "filename": "$file.filename",
+                                        "size": "$file.length",
+                                        "contentType": "$file.metadata._contentType",
+                                        "duration": "$file.metadata._duration"
+                                    }
+                                }
+                            ],
+                            "as": "user"
+                        }
+                    },
+                                
+                    {
+                        "$unwind":
+                            {
+                                "path": "$user",
+                                "includeArrayIndex": "index",
+                                "preserveNullAndEmptyArrays": true  // if is true for left join
+                            }
+                    },
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "id": {"$toString": "$_id"},
+                            "firstName": "$user.firstName",
+                            "lastName": "$user.lastName",
+                            "title": "$title",
+                            "text": "$text",
+                            "phone": "$authorPhone",
+                            "fileId": "$user.fileId",
+                            "filename": "$user.filename",
+                            "size": "$user.size",
+                            "contentType": "$user.contentType",
+                            "duration": "$user.duration"
+                        }
+                    }
+                                
+                ]
+                """;
         return reactiveNativeMongo.aggregate("message", nativeQuery)
                 .flatMap(document -> {
                     MessageDTO dto = new MessageDTO();
