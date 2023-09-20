@@ -1,4 +1,4 @@
-# election-spring-rsocket-with-rsocket-js
+# spring-rsocket-with-rsocket-js
 
 # Notice
 
@@ -34,7 +34,7 @@ This application works on Spring boot 3.0.0 or later and JDK 17 or later
 
 First, install MongoDB 4.2 or later on your system
 
-Second in the application.properties change the value of the adminUsers as a key  and insert your phone number
+Second, in the application.properties change the value of the adminUsers as a key  and insert your phone number
 
 Now you can run this application
 
