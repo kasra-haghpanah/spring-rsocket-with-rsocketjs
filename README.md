@@ -36,6 +36,8 @@ First, install MongoDB 4.2 or later on your system
 
 Second, in the application.properties change the value of the adminUsers as a key  and insert your phone number
 
+Next, change the value of logging.file.path in the application.properties and set your log address. the log is designed for logstash
+
 Now you can run this application
 
 # Application URL

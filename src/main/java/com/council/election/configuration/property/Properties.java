@@ -61,6 +61,7 @@ public class Properties {
         //applicationContext.getId();
         //System.out.println(applicationName + "@@@@");
 
+        config.put("time.zone",environment.getProperty("time.zone"));
         config.put("spring.application.name", environment.getProperty("spring.application.name"));
         config.put("springdoc.packagesToScan", environment.getProperty("springdoc.packagesToScan"));
         config.put("mongo.user", environment.getProperty("mongo.user"));
@@ -101,7 +102,9 @@ public class Properties {
     private static <T> T get(String key, Class<T> T) {
         return (T) config.get(key);
     }
-
+    public static String getTimeZone() {
+        return get("time.zone", String.class);
+    }
 
     public static String getApplicationName() {
         return get("spring.application.name", String.class);

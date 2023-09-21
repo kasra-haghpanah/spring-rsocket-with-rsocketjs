@@ -23,7 +23,7 @@ import java.net.ConnectException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-@DependsOn("properties")
+@DependsOn({"jacksonConfig"})
 @Configuration
 @EnableReactiveMongoRepositories(value = {
         "com.council.election.ddd.repository"

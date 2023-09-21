@@ -25,7 +25,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
-    final Logger logger = Logger.getLogger(GlobalErrorHandler.class.getName());
+    //final Logger logger = Logger.getLogger(GlobalErrorHandler.class.getName());
     private ObjectMapper objectMapper;
 
     public GlobalErrorHandler(ObjectMapper objectMapper) {
@@ -52,7 +52,7 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
         if (throwable instanceof Exception) {
 
             //System.out.println(getStackTrace(throwable));
-            logger.info(getStackTrace(throwable));
+            //logger.info(getStackTrace(throwable));
 //            while (throwable.getCause() != null) {
 //                throwable = throwable.getCause();
 //            }

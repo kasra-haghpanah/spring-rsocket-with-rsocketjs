@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property resource="application.properties" />
+    <property resource="application.properties"/>
     <property name="LOGS" value="${logging.file.path}"/>
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -12,49 +12,93 @@
     </appender>
 
     <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/ars-logger.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+        <file>${LOGS}/election-logger.log</file>
+<!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
+        </encoder>-->
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <fieldNames>
+                <timestamp>@timestamp</timestamp>
+                <version>@version</version>
+                <message>message</message>
+                <logger_name>logger_name</logger_name>
+                <thread_name>thread_name</thread_name>
+                <level>level</level>
+                <level_value>level_value</level_value>
+                <writeMessageAsJson>true</writeMessageAsJson>
+            </fieldNames>
         </encoder>
 
+
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/archived/ars-logger-%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
+            <fileNamePattern>${LOGS}/archived/ars-logger-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>5MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
+
+
+
     </appender>
 
 
-<!--    <appender name="json" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--    <appender name="json" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-        <file>${LOGS}/ars-logger.json</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-        </encoder>
+            <file>${LOGS}/ars-logger.json</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </encoder>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/archived-json/ars-logger-%d{yyyy-MM-dd}.%i.json
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>5MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOGS}/archived-json/ars-logger-%d{yyyy-MM-dd}.%i.json
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>5MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
 
 
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.fanap.ehr.configuration.log.JsonLayout">
-                <timestampFormat>yyyy-MM-dd HH:mm:ss.SSS</timestampFormat>
-                <timestampFormatTimezoneId>Asia/Tehran</timestampFormatTimezoneId>
-                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                    <prettyPrint>false</prettyPrint>
-                </jsonFormatter>
-                <appendLineSeparator>true</appendLineSeparator>
-            </layout>
-        </encoder>
-    </appender>-->
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="com.fanap.ehr.configuration.log.JsonLayout">
+                    <timestampFormat>yyyy-MM-dd HH:mm:ss.SSS</timestampFormat>
+                    <timestampFormatTimezoneId>Asia/Tehran</timestampFormatTimezoneId>
+                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                        <prettyPrint>false</prettyPrint>
+                    </jsonFormatter>
+                    <appendLineSeparator>true</appendLineSeparator>
+                </layout>
+            </encoder>
+        </appender>-->
 
+    <!-- <appender name="json" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+         <file>${LOGS}/ehr-logger.json</file>
+         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+         </encoder>
+
+         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+             <fileNamePattern>${LOGS}/archived-json/ehr-logger-%d{yyyy-MM-dd}.%i.json
+             </fileNamePattern>
+             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                 <maxFileSize>5MB</maxFileSize>
+             </timeBasedFileNamingAndTriggeringPolicy>
+         </rollingPolicy>
+
+
+         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+             <layout class="com.council.election.configuration.log.JsonLayout">
+                 <timestampFormat>yyyy-MM-dd'T'HH:mm:ss</timestampFormat>
+                 <timestampFormatTimezoneId>${time.zone}</timestampFormatTimezoneId>
+                 <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                     <prettyPrint>false</prettyPrint>
+                 </jsonFormatter>
+                 <appendLineSeparator>true</appendLineSeparator>
+             </layout>
+         </encoder>
+     </appender>
+ -->
 
 
     <root level="info">
