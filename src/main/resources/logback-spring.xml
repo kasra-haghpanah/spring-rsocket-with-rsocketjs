@@ -38,79 +38,12 @@
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
 
-
-
     </appender>
-
-
-    <!--    <appender name="json" class="ch.qos.logback.core.rolling.RollingFileAppender">
-
-            <file>${LOGS}/ars-logger.json</file>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-            </encoder>
-
-            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>${LOGS}/archived-json/ars-logger-%d{yyyy-MM-dd}.%i.json
-                </fileNamePattern>
-                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                    <maxFileSize>5MB</maxFileSize>
-                </timeBasedFileNamingAndTriggeringPolicy>
-            </rollingPolicy>
-
-
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="com.fanap.ehr.configuration.log.JsonLayout">
-                    <timestampFormat>yyyy-MM-dd HH:mm:ss.SSS</timestampFormat>
-                    <timestampFormatTimezoneId>Asia/Tehran</timestampFormatTimezoneId>
-                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                        <prettyPrint>false</prettyPrint>
-                    </jsonFormatter>
-                    <appendLineSeparator>true</appendLineSeparator>
-                </layout>
-            </encoder>
-        </appender>-->
-
-    <!-- <appender name="json" class="ch.qos.logback.core.rolling.RollingFileAppender">
-
-         <file>${LOGS}/ehr-logger.json</file>
-         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-         </encoder>
-
-         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-             <fileNamePattern>${LOGS}/archived-json/ehr-logger-%d{yyyy-MM-dd}.%i.json
-             </fileNamePattern>
-             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                 <maxFileSize>5MB</maxFileSize>
-             </timeBasedFileNamingAndTriggeringPolicy>
-         </rollingPolicy>
-
-
-         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-             <layout class="com.council.election.configuration.log.JsonLayout">
-                 <timestampFormat>yyyy-MM-dd'T'HH:mm:ss</timestampFormat>
-                 <timestampFormatTimezoneId>${time.zone}</timestampFormatTimezoneId>
-                 <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                     <prettyPrint>false</prettyPrint>
-                 </jsonFormatter>
-                 <appendLineSeparator>true</appendLineSeparator>
-             </layout>
-         </encoder>
-     </appender>
- -->
 
 
     <root level="info">
         <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
-        <!--<appender-ref ref="json"/>-->
     </root>
-
-    <logger name="com.fanap.health.ars" level="error" additivity="false">
-        <appender-ref ref="RollingFile"/>
-        <appender-ref ref="Console"/>
-        <!--<appender-ref ref="json"/>-->
-    </logger>
 
 </configuration>
