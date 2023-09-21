@@ -43,6 +43,10 @@ public class JwtConfig {
 
     public static final Mono<Jwt> decoder(String token) {
         Mac mac = null;
+
+//        if (token.indexOf("bearer ") < 0) {
+//            token = "bearer " + token;
+//        }
         try {
             mac = Mac.getInstance(SignatureAlgorithm.HS512.getJcaName());
         } catch (NoSuchAlgorithmException e) {

@@ -1,11 +1,19 @@
 package com.council.election.configuration.webflux.filter;
 
+import com.council.election.configuration.exception.GlobalErrorHandler;
 import com.council.election.configuration.log.Log;
 import com.council.election.configuration.property.Properties;
 import com.council.election.configuration.webflux.security.config.JwtConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
@@ -15,15 +23,14 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // https://piotrminkowski.com/2019/10/15/reactive-logging-with-spring-webflux-and-logstash/
 @DependsOn("jacksonConfig")
 @Configuration
+@Order(-1)
 public class Filter implements WebFilter {
 
     final Logger logger = Logger.getLogger(Filter.class.getName());
@@ -41,6 +48,19 @@ public class Filter implements WebFilter {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault());
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.format(calendar.getTime());
+    }
+
+    public class HttpError {
+
+        private String message;
+
+        HttpError(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 
     @Override
@@ -67,10 +87,48 @@ public class Filter implements WebFilter {
 
         return webFilterChain.filter(exchangeDecorator)
                 .doOnSuccess(aVoid -> {
-                    var traceId = "";
+
+                })
+                .doAfterTerminate(() -> {
+                    System.out.println("doAfterTerminate");
                 })
                 .doOnError(throwable -> {
                     log.setStackTrace(throwable);
+                    DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
+                    if (throwable instanceof Exception) {
+
+                        //System.out.println(getStackTrace(throwable));
+                        //logger.info(getStackTrace(throwable));
+//            while (throwable.getCause() != null) {
+//                throwable = throwable.getCause();
+//            }
+
+                        String message = throwable.getMessage();
+                        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+                        if (throwable instanceof DuplicateKeyException) {
+                            message = "duplicateKey";
+                            httpStatus = HttpStatus.CONFLICT;
+                        }
+
+                        exchange.getResponse().setStatusCode(httpStatus);
+                        DataBuffer dataBuffer = null;
+                        try {
+                            dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new Filter.HttpError(message)));
+                        } catch (JsonProcessingException e) {
+                            dataBuffer = bufferFactory.wrap("".getBytes());
+                        }
+                        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                        exchange.getResponse().writeWith(Mono.just(dataBuffer));
+                    } else {
+
+                        exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                        exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
+                        DataBuffer dataBuffer = bufferFactory.wrap("Unknown error".getBytes());
+                        exchange.getResponse().writeWith(Mono.just(dataBuffer));
+                    }
+
+
                 })
                 .doFinally(signalType -> {
 
@@ -102,18 +160,26 @@ public class Filter implements WebFilter {
                                 exchange.getRequest().getCookies().toSingleValueMap().forEach((key, value) -> {
                                     log.addCookie(key, value.getValue());
                                 });
-                                String authorization = exchange.getRequest().getHeaders().get("Authorization").get(0);
-                                if (authorization == null) {
-                                    authorization = "";
+                                String authorization = "";
+                                List<String> authorizationList = exchange.getRequest().getHeaders().get("Authorization");
+                                if (authorizationList != null && authorizationList.size() > 0) {
+                                    authorization = authorizationList.get(0);
                                 }
                                 int indexSpace = authorization.indexOf(" ");
                                 if (indexSpace > 0) {
                                     authorization = authorization.substring(indexSpace + 1);
                                 }
-                                return JwtConfig.decoder(authorization);
+                                try {
+                                    return JwtConfig.decoder(authorization);
+                                } catch (Exception e) {
+                                    return Mono.just(Void.TYPE);
+                                }
+
                             })
                             .flatMap(jwt -> {
-                                log.setUser(jwt);
+                                if (!jwt.equals(Void.TYPE)) {
+                                    log.setUser((Map<String, Object>) jwt);
+                                }
                                 log.setExecutionTime(startTime);
                                 log.info();
                                 return Mono.empty();

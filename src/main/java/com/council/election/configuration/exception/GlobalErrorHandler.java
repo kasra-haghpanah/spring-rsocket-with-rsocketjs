@@ -21,8 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.server.ServerWebExchange;
 
 @Configuration
-@Order(-2)
-
+@Order(-1)
 public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
     //final Logger logger = Logger.getLogger(GlobalErrorHandler.class.getName());
