@@ -70,8 +70,8 @@ public class MyJsonLayout extends JsonLayoutBase<ILoggingEvent> {
 
     protected Map toJsonMap(ILoggingEvent var1) {
         LinkedHashMap var2 = new LinkedHashMap();
-        this.addTimestamp("timestamp", this.includeTimestamp, var1.getTimeStamp(), var2);
-        this.add("version", this.includeLevel, version, var2);
+        this.addTimestamp("@timestamp", this.includeTimestamp, var1.getTimeStamp(), var2);
+        this.add("@version", this.includeLevel, version, var2);
         this.add("level", this.includeLevel, String.valueOf(var1.getLevel()), var2);
         this.add("thread", this.includeThreadName, var1.getThreadName(), var2);
         this.addMap("mdc", this.includeMDC, var1.getMDCPropertyMap(), var2);

@@ -1,5 +1,6 @@
 package com.council.election.configuration.property;
 
+import com.council.election.configuration.log.MyJsonLayout;
 import com.council.election.ddd.client.rest.SMSClient;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.ApplicationContext;
@@ -61,7 +62,9 @@ public class Properties {
         //applicationContext.getId();
         //System.out.println(applicationName + "@@@@");
 
-        config.put("time.zone",environment.getProperty("time.zone"));
+
+        config.put("swagger.version", environment.getProperty("swagger.version"));
+        config.put("time.zone", environment.getProperty("time.zone"));
         config.put("spring.application.name", environment.getProperty("spring.application.name"));
         config.put("springdoc.packagesToScan", environment.getProperty("springdoc.packagesToScan"));
         config.put("mongo.user", environment.getProperty("mongo.user"));
@@ -86,6 +89,8 @@ public class Properties {
         config.put("pannel.sms.sender", environment.getProperty("pannel.sms.sender"));
         config.put("pannel.sms.active", Boolean.valueOf(environment.getProperty("pannel.sms.active", String.class)));
 
+
+        MyJsonLayout.setVersion(get("swagger.version", String.class));
         SMSClient.setApiKey(get("pannel.sms.apiKey", String.class));
         SMSClient.setBaseUrl(get("pannel.sms.baseUrl", String.class));
         SMSClient.setSender(get("pannel.sms.sender", String.class));
@@ -102,6 +107,11 @@ public class Properties {
     private static <T> T get(String key, Class<T> T) {
         return (T) config.get(key);
     }
+
+    public static String getSwaggerVersion() {
+        return get("swagger.version", String.class);
+    }
+
     public static String getTimeZone() {
         return get("time.zone", String.class);
     }

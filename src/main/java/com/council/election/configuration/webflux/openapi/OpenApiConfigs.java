@@ -75,7 +75,7 @@ public class OpenApiConfigs {
                 .info(
                         new Info()
                                 .title("election-spring-rsocket-with-rsocket-js")
-                                .version("v0.0.1")
+                                .version(Properties.getSwaggerVersion())
                                 .license(new License().name("Apache 2.0").url("http://springdoc.org"))
                 )
                 .externalDocs(new ExternalDocumentation()
