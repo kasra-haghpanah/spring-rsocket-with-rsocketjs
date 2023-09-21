@@ -103,6 +103,9 @@ public class Filter implements WebFilter {
                                     log.addCookie(key, value.getValue());
                                 });
                                 String authorization = exchange.getRequest().getHeaders().get("Authorization").get(0);
+                                if (authorization == null) {
+                                    authorization = "";
+                                }
                                 int indexSpace = authorization.indexOf(" ");
                                 if (indexSpace > 0) {
                                     authorization = authorization.substring(indexSpace + 1);

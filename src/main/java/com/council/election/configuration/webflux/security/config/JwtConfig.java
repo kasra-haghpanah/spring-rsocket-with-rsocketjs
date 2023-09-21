@@ -46,7 +46,8 @@ public class JwtConfig {
         try {
             mac = Mac.getInstance(SignatureAlgorithm.HS512.getJcaName());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            return Mono.empty();
         }
         SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), mac.getAlgorithm());
         return NimbusReactiveJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build().decode(token);
