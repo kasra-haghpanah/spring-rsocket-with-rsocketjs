@@ -1,11 +1,18 @@
 package com.council.election.configuration.webflux.security.config;
 
+import com.council.election.configuration.exception.HttpError;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -34,14 +41,20 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
+@DependsOn("jacksonConfig")
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 public class SecurityConfig implements ServerSecurityContextRepository {
 
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
+    private final ObjectMapper objectMapper;
 
-    public SecurityConfig(JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager) {
+    public SecurityConfig(
+            ObjectMapper objectMapper,
+            JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager
+    ) {
+        this.objectMapper = objectMapper;
         this.jwtReactiveAuthenticationManager = jwtReactiveAuthenticationManager;
     }
 
@@ -92,13 +105,34 @@ public class SecurityConfig implements ServerSecurityContextRepository {
     public SecurityWebFilterChain securitygWebFilterChain(ServerHttpSecurity http) {
         return http
                 .exceptionHandling()
-                .authenticationEntryPoint((swe, e) -> {
+                .authenticationEntryPoint((exchange, authenticationException) -> {
                     return Mono.fromRunnable(() -> {
-                        swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+
+
+                        DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
+                        DataBuffer dataBuffer = null;
+                        try {
+                            dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new HttpError(HttpStatus.UNAUTHORIZED.toString())));
+                        } catch (JsonProcessingException e) {
+                            dataBuffer = bufferFactory.wrap("".getBytes());
+                        }
+                        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                        exchange.getResponse().writeWith(Mono.just(dataBuffer)).subscribe();
                     });
-                }).accessDeniedHandler((swe, e) -> {
+                }).accessDeniedHandler((exchange, authenticationException) -> {
                     return Mono.fromRunnable(() -> {
-                        swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+
+                        DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
+                        DataBuffer dataBuffer = null;
+                        try {
+                            dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new HttpError(HttpStatus.FORBIDDEN.toString())));
+                        } catch (JsonProcessingException e) {
+                            dataBuffer = bufferFactory.wrap("".getBytes());
+                        }
+                        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                        exchange.getResponse().writeWith(Mono.just(dataBuffer)).subscribe();
                     });
                 }).and()
                 .csrf().disable()

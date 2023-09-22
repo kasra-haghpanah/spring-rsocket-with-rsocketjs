@@ -21,7 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.server.ServerWebExchange;
 
 @Configuration
-@Order(-1)
+@Order(-2)
 public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
     //final Logger logger = Logger.getLogger(GlobalErrorHandler.class.getName());
@@ -29,19 +29,6 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
     public GlobalErrorHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-    }
-
-    public class HttpError {
-
-        private String message;
-
-        HttpError(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
     }
 
     @Override

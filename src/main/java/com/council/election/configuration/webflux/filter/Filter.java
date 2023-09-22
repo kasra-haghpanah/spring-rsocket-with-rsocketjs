@@ -1,6 +1,7 @@
 package com.council.election.configuration.webflux.filter;
 
 import com.council.election.configuration.exception.GlobalErrorHandler;
+import com.council.election.configuration.exception.HttpError;
 import com.council.election.configuration.log.Log;
 import com.council.election.configuration.property.Properties;
 import com.council.election.configuration.webflux.security.config.JwtConfig;
@@ -50,19 +51,6 @@ public class Filter implements WebFilter {
         return dateFormat.format(calendar.getTime());
     }
 
-    public class HttpError {
-
-        private String message;
-
-        HttpError(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    }
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain webFilterChain) {
         //exchange.getResponse().getHeaders().getAcceptCharset().add(Charset.forName("UTF-8"));
@@ -90,7 +78,7 @@ public class Filter implements WebFilter {
 
                 })
                 .doAfterTerminate(() -> {
-                    System.out.println("doAfterTerminate");
+                   // System.out.println("doAfterTerminate");
                 })
                 .doOnError(throwable -> {
                     log.setStackTrace(throwable);
@@ -114,7 +102,7 @@ public class Filter implements WebFilter {
                         exchange.getResponse().setStatusCode(httpStatus);
                         DataBuffer dataBuffer = null;
                         try {
-                            dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new Filter.HttpError(message)));
+                            dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new HttpError(message)));
                         } catch (JsonProcessingException e) {
                             dataBuffer = bufferFactory.wrap("".getBytes());
                         }
