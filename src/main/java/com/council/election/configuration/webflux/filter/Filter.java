@@ -131,14 +131,20 @@ public class Filter implements WebFilter {
                                                 }
                                         );
                                         //return Mono.just(exchange.getMultipartData());
-                                        return exchange.getResponse().getHeaders();
+                                        return exchange.getRequest().getHeaders();
                                     }
                             )
                             .flatMap(httpHeaders -> {
 
                                 httpHeaders.forEach((key, values) -> {
-                                    log.addHeader(key, values);
+                                    log.addRequestHeader(key, values);
                                 });
+
+                                exchange.getResponse().getHeaders()
+                                        .forEach((key, values) -> {
+                                    log.addResponseHeader(key, values);
+                                });
+
                                 exchange.getRequest().getQueryParams().toSingleValueMap().forEach((key, value) -> {
                                     log.addQueryParameters(key, value);
                                 });

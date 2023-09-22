@@ -10,16 +10,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.springframework.security.oauth2.jwt.Jwt;
-//import lombok.extern.slf4j.Slf4j;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//@Slf4j
 public class Log {
 
     @JsonIgnore
@@ -36,8 +33,11 @@ public class Log {
     @JsonProperty("contextPath")
     private String contextPath;
 
-    @JsonProperty("headers")
-    private final Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    @JsonProperty("requestHeaders")
+    private final Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
+
+    @JsonProperty("responseHeaders")
+    private final Map<String, List<String>> responseHeaders = new HashMap<String, List<String>>();
 
     @JsonProperty("url")
     private String url;
@@ -110,15 +110,23 @@ public class Log {
     }
 
 
-    public Map<String, List<String>> getHeaders() {
-        return headers;
+    public Map<String, List<String>> getRequestHeaders() {
+        return requestHeaders;
     }
 
-    public Log addHeader(String key, List<String> value) {
-        this.headers.put(key, value);
+    public Log addRequestHeader(String key, List<String> value) {
+        this.requestHeaders.put(key, value);
         return this;
     }
 
+    public Map<String, List<String>> getResponseHeaders() {
+        return responseHeaders;
+    }
+
+    public Log addResponseHeader(String key, List<String> value) {
+        this.responseHeaders.put(key, value);
+        return this;
+    }
 
     public String getUrl() {
         return url;
