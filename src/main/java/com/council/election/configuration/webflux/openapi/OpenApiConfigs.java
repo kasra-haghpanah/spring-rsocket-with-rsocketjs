@@ -2,10 +2,7 @@ package com.council.election.configuration.webflux.openapi;
 
 import com.council.election.configuration.property.Properties;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.StringSchema;
@@ -30,12 +27,6 @@ import java.util.List;
 
 @DependsOn("properties")
 @Configuration
-//@SecurityScheme(
-//        name = "Bearer Authentication",
-//        type = SecuritySchemeType.HTTP,
-//        bearerFormat = "JWT",
-//        scheme = "bearer"
-//)
 public class OpenApiConfigs {
 
     static {
@@ -44,22 +35,21 @@ public class OpenApiConfigs {
 
     @Bean
     public GroupedOpenApi publicApi() {
+        String[] paths = { "/**" };
         return GroupedOpenApi.builder()
                 .group(Properties.getApplicationName())
                 .packagesToScan(Properties.getSpringdocPackagesToScan())
+                .pathsToMatch(paths)
                 .addOperationCustomizer(addGlobalItemToRequest())
                 .build();
     }
 
     @Bean
-    public OpenAPI springElectionOpenAPI(
-//            @Value("${openapi.service.title}") String serviceTitle,
-//            @Value("${openapi.service.version}") String serviceVersion,
-//            @Value("${openapi.service.url}") String url
-    ) {
+    public OpenAPI springElectionOpenAPI() {
 
         final String securitySchemeName = "bearerAuth";
-        return new OpenAPI()
+        return new OpenAPI(SpecVersion.V31)
+                .specVersion(SpecVersion.V31)
                 .servers(List.of(new Server().url("/")))
                 .components(
                         new Components()
