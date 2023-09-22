@@ -2,6 +2,7 @@ package com.council.election.configuration.webflux.filter;
 
 import com.council.election.configuration.exception.GlobalErrorHandler;
 import com.council.election.configuration.exception.HttpError;
+import com.council.election.configuration.log.JsonUtil;
 import com.council.election.configuration.log.Log;
 import com.council.election.configuration.property.Properties;
 import com.council.election.configuration.webflux.security.config.JwtConfig;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.WebFilter;
@@ -78,7 +80,7 @@ public class Filter implements WebFilter {
 
                 })
                 .doAfterTerminate(() -> {
-                   // System.out.println("doAfterTerminate");
+                    // System.out.println("doAfterTerminate");
                 })
                 .doOnError(throwable -> {
                     log.setStackTrace(throwable);
@@ -152,6 +154,11 @@ public class Filter implements WebFilter {
                                 List<String> authorizationList = exchange.getRequest().getHeaders().get("Authorization");
                                 if (authorizationList != null && authorizationList.size() > 0) {
                                     authorization = authorizationList.get(0);
+                                } else if (log.getCookies().keySet().size() > 0) {
+                                    var cookieValue = log.getCookies().get("Cookie");
+                                    if (!JsonUtil.isBlank(cookieValue)) {
+                                        authorization = cookieValue;
+                                    }
                                 }
                                 int indexSpace = authorization.indexOf(" ");
                                 if (indexSpace > 0) {
@@ -166,7 +173,7 @@ public class Filter implements WebFilter {
                             })
                             .flatMap(jwt -> {
                                 if (!jwt.equals(Void.TYPE)) {
-                                    log.setUser((Map<String, Object>) jwt);
+                                    log.setUser((Jwt) jwt);
                                 }
                                 log.setExecutionTime(startTime);
                                 log.info();
