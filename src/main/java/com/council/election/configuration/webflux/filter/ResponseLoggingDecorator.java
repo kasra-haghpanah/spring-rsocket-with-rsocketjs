@@ -38,12 +38,12 @@ public class ResponseLoggingDecorator extends ServerHttpResponseDecorator {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
                 Channels.newChannel(baos).write(dataBuffer.asByteBuffer().asReadOnlyBuffer());
-                String response = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-                log.setResponseBody(response);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {
+                    String response = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+                    log.setResponseBody(response);
                     baos.close();
                 } catch (IOException e) {
                     e.printStackTrace();

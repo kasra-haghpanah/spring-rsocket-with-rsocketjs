@@ -54,8 +54,13 @@ public class Log {
     @JsonProperty("requestBody")
     private Object requestBody;
 
+    @JsonIgnore
+    private final StringWriter requestBodyWriter = new StringWriter();
     @JsonProperty("responseBody")
     private Object responseBody;
+
+    @JsonIgnore
+    private final StringWriter responseBodyWriter = new StringWriter();
 
     @JsonProperty("stackTrace")
     private String stackTrace;
@@ -88,6 +93,35 @@ public class Log {
 
     public static Log create(ObjectMapper objectMapper, Logger logger) {
         return new Log(objectMapper, logger);
+    }
+
+    @JsonIgnore
+    public void handleRequestAndResponseBody() {
+
+        if (this.requestBody == null) {
+            String request = this.requestBodyWriter.toString();
+            this.requestBodyWriter.flush();
+            JsonNode map = JsonUtil.toObject(this.objectMapper, (String) request, JsonNode.class, false);
+            if (map != null) {
+                this.requestBody = map;
+            } else {
+                this.requestBody = request;
+            }
+        }
+
+        if (this.responseBody == null) {
+            String response = this.responseBodyWriter.toString();
+            this.responseBodyWriter.flush();
+            JsonNode map = JsonUtil.toObject(this.objectMapper, (String) response, JsonNode.class, false);
+            if (map != null) {
+                this.responseBody = map;
+            } else {
+                this.responseBody = response;
+            }
+        }
+
+        this.requestBody = requestBody;
+
     }
 
     public Long getExecutionTime() {
@@ -168,14 +202,8 @@ public class Log {
         return requestBody;
     }
 
-    public Log setRequestBody(Object requestBody) {
-        if (requestBody != null && requestBody instanceof String) {
-            JsonNode map = JsonUtil.toObject(this.objectMapper, (String) requestBody, JsonNode.class, false);
-            if (map != null) {
-                requestBody = map;
-            }
-        }
-        this.requestBody = requestBody;
+    public Log setRequestBody(String requestBody) {
+        this.requestBodyWriter.append(requestBody);
         return this;
     }
 
@@ -256,15 +284,9 @@ public class Log {
     }
 
 
-    public void setResponseBody(Object responseBody) {
+    public void setResponseBody(String responseBody) {
 
-        if (responseBody != null && responseBody instanceof String) {
-            JsonNode map = JsonUtil.toObject(this.objectMapper, (String) responseBody, JsonNode.class, false);
-            if (map != null) {
-                responseBody = map;
-            }
-        }
-        this.responseBody = responseBody;
+        this.responseBodyWriter.append(responseBody);
     }
 
     public Map<String, Object> getUser() {
@@ -310,6 +332,7 @@ public class Log {
 
     @JsonIgnore
     public void info() {
+        handleRequestAndResponseBody();
         logger.info(this.toString());
     }
 

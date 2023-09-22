@@ -27,12 +27,13 @@ public class RequestLoggingDecorator extends ServerHttpRequestDecorator {
         return super.getBody().doOnNext(dataBuffer -> {
             try {
                 Channels.newChannel(baos).write(dataBuffer.asByteBuffer().asReadOnlyBuffer());
-                String body = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-                log.setRequestBody(body);
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {
+                    String body = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+                    log.setRequestBody(body);
                     baos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
