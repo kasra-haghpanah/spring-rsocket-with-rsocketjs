@@ -34,6 +34,11 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange serverWebExchange, Throwable throwable) {
 
+        if (throwable instanceof HttpException) {
+            HttpException httpException = (HttpException) throwable;
+            return httpException.setResponse(serverWebExchange);
+        }
+
         DataBufferFactory bufferFactory = serverWebExchange.getResponse().bufferFactory();
         if (throwable instanceof Exception) {
 
@@ -45,6 +50,7 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
             String message = throwable.getMessage();
             HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
 
             if (throwable instanceof DuplicateKeyException) {
                 message = "duplicateKey";
