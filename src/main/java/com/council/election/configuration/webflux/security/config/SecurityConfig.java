@@ -166,8 +166,6 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                 .pathMatchers(
                         "/v3/api-docs/**",
                         "/api-docs/**",
-                        "/configuration/ui",
-                        "/configuration/security",
                         "/webjars/**",
                         "/cookie",
                         "/change/**",
