@@ -164,14 +164,10 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 .pathMatchers(
+                        "/v3/api-docs/**",
                         "/api-docs/**",
-                        "/swagger-resources",
-                        "/swagger-resources/**",
                         "/configuration/ui",
                         "/configuration/security",
-                        "/swagger-ui/",
-                        "/swagger-ui/**",
-                        "/swagger-ui**",
                         "/webjars/**",
                         "/cookie",
                         "/change/**",
