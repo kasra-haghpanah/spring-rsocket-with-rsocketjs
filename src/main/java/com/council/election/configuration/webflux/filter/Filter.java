@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.ServerWebExchangeDecorator;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
+import org.springframework.web.server.*;
 import reactor.core.publisher.Mono;
 
 import java.text.SimpleDateFormat;
@@ -27,10 +24,10 @@ import java.util.logging.Logger;
 // https://piotrminkowski.com/2019/10/15/reactive-logging-with-spring-webflux-and-logstash/
 @DependsOn("jacksonConfig")
 @Configuration
-@Order(-1)
+//@Order(-2)
 public class Filter implements WebFilter {
 
-    final Logger logger = Logger.getLogger(Filter.class.getName());
+    public static final Logger logger = Logger.getLogger(Filter.class.getName());
     private final ObjectMapper objectMapper;
 
     public Filter(ObjectMapper objectMapper) {
@@ -79,20 +76,15 @@ public class Filter implements WebFilter {
                 .doOnError(throwable -> {
                     log.setStackTrace(throwable);
 
-                    String message = throwable.getMessage();
+                    HttpException httpException;
                     if (throwable instanceof HttpException) {
-                        HttpException httpException = (HttpException) throwable;
-                        httpException.setResponse(exchange).subscribe();
+                        httpException = (HttpException) throwable;
+                    } else if (throwable instanceof DuplicateKeyException) {
+                        httpException = new HttpException("duplicateKey", HttpStatus.CONFLICT);
+                    } else {
+                        httpException = new HttpException(throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                     }
-
-                    if (throwable instanceof DuplicateKeyException) {
-                        HttpException httpException = new HttpException("duplicateKey", HttpStatus.CONFLICT);
-                        httpException.setResponse(exchange).subscribe();
-                    }
-
-                    HttpException httpException = new HttpException(throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                     httpException.setResponse(exchange).subscribe();
-
 
                 })
                 .doFinally(signalType -> {
