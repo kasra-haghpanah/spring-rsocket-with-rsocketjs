@@ -39,39 +39,20 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
             return httpException.setResponse(serverWebExchange);
         }
 
-        DataBufferFactory bufferFactory = serverWebExchange.getResponse().bufferFactory();
-        if (throwable instanceof Exception) {
-
-            //System.out.println(getStackTrace(throwable));
-            //logger.info(getStackTrace(throwable));
+        //System.out.println(getStackTrace(throwable));
+        //logger.info(getStackTrace(throwable));
 //            while (throwable.getCause() != null) {
 //                throwable = throwable.getCause();
 //            }
 
-            String message = throwable.getMessage();
-            HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-
-
-            if (throwable instanceof DuplicateKeyException) {
-                message = "duplicateKey";
-                httpStatus = HttpStatus.CONFLICT;
-            }
-
-            serverWebExchange.getResponse().setStatusCode(httpStatus);
-            DataBuffer dataBuffer = null;
-            try {
-                dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new HttpError(message)));
-            } catch (JsonProcessingException e) {
-                dataBuffer = bufferFactory.wrap("".getBytes());
-            }
-            serverWebExchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-            return serverWebExchange.getResponse().writeWith(Mono.just(dataBuffer));
+        if (throwable instanceof DuplicateKeyException) {
+            HttpException httpException = new HttpException("duplicateKey", HttpStatus.CONFLICT);
+            return httpException.setResponse(serverWebExchange);
         }
 
-        serverWebExchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-        serverWebExchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
-        DataBuffer dataBuffer = bufferFactory.wrap("Unknown error".getBytes());
-        return serverWebExchange.getResponse().writeWith(Mono.just(dataBuffer));
+        HttpException httpException = new HttpException(throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return httpException.setResponse(serverWebExchange);
+
     }
 
     public static String getStackTrace(Throwable throwable) {
