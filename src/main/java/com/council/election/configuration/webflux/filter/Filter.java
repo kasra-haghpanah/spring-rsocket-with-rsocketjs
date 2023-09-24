@@ -46,12 +46,16 @@ public class Filter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain webFilterChain) {
-        //exchange.getResponse().getHeaders().getAcceptCharset().add(Charset.forName("UTF-8"));
-        //exchange.getResponse().getHeaders().set("accept-language", "fa");
+/*
+        exchange.getResponse().getHeaders().getAcceptCharset().add(Charset.forName("UTF-8"));
+        exchange.getResponse().getHeaders().set("accept-language", "fa");
+        exchange.getSession().subscribe(session->{System.out.println(session);});
+        */
         long startTime = System.currentTimeMillis();
         Log log = Log.create(this.objectMapper, logger);
         exchange.getResponse().getHeaders().set("server", serverName);
         exchange.getResponse().getHeaders().set("X-Powered-By", poweredBy);
+
 
         ServerWebExchangeDecorator exchangeDecorator = new ServerWebExchangeDecorator(exchange) {
             @Override
@@ -104,13 +108,14 @@ public class Filter implements WebFilter {
                             .flatMap(httpHeaders -> {
 
                                 httpHeaders.forEach((key, values) -> {
-                                    log.addRequestHeader(key, values);
+                                    if (!key.equals("Cookie")) {
+                                        log.addRequestHeader(key, values);
+                                    }
                                 });
 
-                                exchange.getResponse().getHeaders()
-                                        .forEach((key, values) -> {
-                                            log.addResponseHeader(key, values);
-                                        });
+                                exchange.getResponse().getHeaders().forEach((key, values) -> {
+                                    log.addResponseHeader(key, values);
+                                });
 
                                 exchange.getRequest().getQueryParams().toSingleValueMap().forEach((key, value) -> {
                                     log.addQueryParameters(key, value);
