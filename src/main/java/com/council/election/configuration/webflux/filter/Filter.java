@@ -8,6 +8,7 @@ import com.council.election.configuration.webflux.security.config.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -23,8 +24,8 @@ import java.util.logging.Logger;
 // https://piotrminkowski.com/2019/10/15/reactive-logging-with-spring-webflux-and-logstash/
 @DependsOn("jacksonConfig")
 @Configuration
-//@Order(-2)
-public class Filter implements WebFilter {
+@Order(-2)
+public class Filter implements WebFilter, WebExceptionHandler {
 
     private static final Logger logger = Logger.getLogger(Filter.class.getName());
     private final ObjectMapper objectMapper;
@@ -45,6 +46,28 @@ public class Filter implements WebFilter {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.getDefault());
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.format(calendar.getTime());
+    }
+
+    @Override
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable throwable) {
+
+        long startime = System.currentTimeMillis();
+        Log log = Log.create(this.objectMapper, getLogger());
+        exchange.getResponse().getHeaders().set("server", serverName);
+        exchange.getResponse().getHeaders().set("X-Powered-By", poweredBy);
+        log.setStackTrace(throwable);
+
+        HttpException httpException;
+        if (throwable instanceof HttpException) {
+            httpException = (HttpException) throwable;
+        } else if (throwable instanceof DuplicateKeyException) {
+            httpException = new HttpException("duplicateKey", HttpStatus.CONFLICT);
+        } else {
+            httpException = new HttpException(throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        addLogFromServerWebExchange(exchange, log, startime).subscribe();
+        return httpException.setResponse(exchange);
     }
 
     @Override
