@@ -1,6 +1,5 @@
 package com.council.election.configuration.exception;
 
-import com.council.election.configuration.log.Log;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
