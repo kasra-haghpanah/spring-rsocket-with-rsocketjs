@@ -15,6 +15,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.server.*;
 import reactor.core.publisher.Mono;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
@@ -25,7 +26,7 @@ import java.util.logging.Logger;
 //@Order(-2)
 public class Filter implements WebFilter {
 
-    public static final Logger logger = Logger.getLogger(Filter.class.getName());
+    private static final Logger logger = Logger.getLogger(Filter.class.getName());
     private final ObjectMapper objectMapper;
 
     public Filter(ObjectMapper objectMapper) {
@@ -34,6 +35,10 @@ public class Filter implements WebFilter {
 
     public final String serverName = Properties.getServerName();
     public final String poweredBy = Properties.getPoweredBy();
+
+    public static Logger getLogger() {
+        return logger;
+    }
 
     String getServerTime() {
         Calendar calendar = Calendar.getInstance();
@@ -90,74 +95,74 @@ public class Filter implements WebFilter {
 
                 })
                 .doFinally(signalType -> {
+                    addLogFromServerWebExchange(exchange, log, startTime).subscribe();
+                });
+    }
 
-                    exchange.getFormData()
-                            .map(
-                                    form -> {
-                                        form.toSingleValueMap().forEach(
-                                                (key, value) -> {
-                                                    log.addForm(key, value);
-                                                }
-                                        );
-                                        //return Mono.just(exchange.getMultipartData());
-                                        return exchange.getRequest().getHeaders();
+    public static Mono<Void> addLogFromServerWebExchange(ServerWebExchange exchange, Log log, long startTime) {
+        return exchange.getFormData()
+                .map(
+                        form -> {
+                            form.toSingleValueMap().forEach(
+                                    (key, value) -> {
+                                        log.addForm(key, value);
                                     }
-                            )
-                            .flatMap(httpHeaders -> {
+                            );
+                            //return Mono.just(exchange.getMultipartData());
+                            return exchange.getRequest().getHeaders();
+                        }
+                )
+                .flatMap(httpHeaders -> {
 
-                                httpHeaders.forEach((key, values) -> {
-                                    if (!key.equals("Cookie")) {
-                                        log.addRequestHeader(key, values);
-                                    }
-                                });
+                    httpHeaders.forEach((key, values) -> {
+                        if (!key.equals("Cookie")) {
+                            log.addRequestHeader(key, values);
+                        }
+                    });
 
-                                exchange.getResponse().getHeaders().forEach((key, values) -> {
-                                    log.addResponseHeader(key, values);
-                                });
+                    exchange.getResponse().getHeaders().forEach((key, values) -> {
+                        log.addResponseHeader(key, values);
+                    });
 
-                                exchange.getRequest().getQueryParams().toSingleValueMap().forEach((key, value) -> {
-                                    log.addQueryParameters(key, value);
-                                });
+                    exchange.getRequest().getQueryParams().toSingleValueMap().forEach((key, value) -> {
+                        log.addQueryParameters(key, value);
+                    });
 
-                                log.setStatusCode(exchange.getResponse().getStatusCode().value());
-                                log.setMethod(exchange.getRequest().getMethod().name());
-                                log.setUrl(exchange.getRequest().getURI().getPath());
-                                log.setRequestId(exchange.getRequest().getId());
-                                exchange.getRequest().getCookies().toSingleValueMap().forEach((key, value) -> {
-                                    log.addCookie(key, value.getValue());
-                                });
-                                String authorization = "";
-                                List<String> authorizationList = exchange.getRequest().getHeaders().get("Authorization");
-                                if (authorizationList != null && authorizationList.size() > 0) {
-                                    authorization = authorizationList.get(0);
-                                } else if (log.getCookies().keySet().size() > 0) {
-                                    var cookieValue = log.getCookies().get("Cookie");
-                                    if (!JsonUtil.isBlank(cookieValue)) {
-                                        authorization = cookieValue;
-                                    }
-                                }
-                                int indexSpace = authorization.indexOf(" ");
-                                if (indexSpace > 0) {
-                                    authorization = authorization.substring(indexSpace + 1);
-                                }
-                                try {
-                                    return JwtConfig.decoder(authorization);
-                                } catch (Exception e) {
-                                    return Mono.just(Void.TYPE);
-                                }
+                    log.setStatusCode(exchange.getResponse().getStatusCode().value());
+                    log.setMethod(exchange.getRequest().getMethod().name());
+                    log.setUrl(exchange.getRequest().getURI().getPath());
+                    log.setRequestId(exchange.getRequest().getId());
+                    exchange.getRequest().getCookies().toSingleValueMap().forEach((key, value) -> {
+                        log.addCookie(key, value.getValue());
+                    });
+                    String authorization = "";
+                    List<String> authorizationList = exchange.getRequest().getHeaders().get("Authorization");
+                    if (authorizationList != null && authorizationList.size() > 0) {
+                        authorization = authorizationList.get(0);
+                    } else if (log.getCookies().keySet().size() > 0) {
+                        var cookieValue = log.getCookies().get("Cookie");
+                        if (!JsonUtil.isBlank(cookieValue)) {
+                            authorization = cookieValue;
+                        }
+                    }
+                    int indexSpace = authorization.indexOf(" ");
+                    if (indexSpace > 0) {
+                        authorization = authorization.substring(indexSpace + 1);
+                    }
+                    try {
+                        return JwtConfig.decoder(authorization);
+                    } catch (Exception e) {
+                        return Mono.just(Void.TYPE);
+                    }
 
-                            })
-                            .flatMap(jwt -> {
-                                if (!jwt.equals(Void.TYPE)) {
-                                    log.setUser((Jwt) jwt);
-                                }
-                                log.setExecutionTime(startTime);
-                                log.info();
-                                return Mono.empty();
-                            })
-                            .subscribe();
-
-
+                })
+                .flatMap(jwt -> {
+                    if (!jwt.equals(Void.TYPE)) {
+                        log.setUser((Jwt) jwt);
+                    }
+                    log.setExecutionTime(startTime);
+                    log.info();
+                    return Mono.empty();
                 });
     }
 
