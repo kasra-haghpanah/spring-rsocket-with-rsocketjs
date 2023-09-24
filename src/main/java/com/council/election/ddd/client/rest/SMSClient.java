@@ -109,7 +109,7 @@ public class SMSClient {
                 .builder()
                 .baseUrl(baseUrl)
                 .build()
-                .method(HttpMethod.resolve("POST"))
+                .method(HttpMethod.valueOf("POST"))
                 .uri(uri)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(multiValueMap))
