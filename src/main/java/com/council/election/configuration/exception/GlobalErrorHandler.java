@@ -44,10 +44,8 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
             httpException = new HttpException(throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        httpException.setResponse(exchange).block();
-        return Filter.addLogFromServerWebExchange(exchange, log, startime);
-
-
+        Filter.addLogFromServerWebExchange(exchange, log, startime).subscribe();
+        return httpException.setResponse(exchange);
     }
 
 }
