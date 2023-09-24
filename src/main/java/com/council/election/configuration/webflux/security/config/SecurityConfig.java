@@ -99,7 +99,7 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                     });
                 }).accessDeniedHandler((exchange, authenticationException) -> {
                     return Mono.fromRunnable(() -> {
-                        throw new HttpException(HttpStatus.UNAUTHORIZED.toString(), HttpStatus.FORBIDDEN);
+                        throw new HttpException(HttpStatus.FORBIDDEN.toString(), HttpStatus.FORBIDDEN);
                     });
                 }).and()
                 .csrf().disable()
