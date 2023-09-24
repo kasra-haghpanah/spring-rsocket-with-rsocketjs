@@ -46,17 +46,19 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public Mono<String> logout(
             @RequestHeader(value = "Cookie", required = false) String cookie,
             ServerWebExchange exchange
     ) {
-        exchange.getResponse().getCookies().clear();
+        if (exchange.getResponse().getCookies().size() > 0) {
+            exchange.getResponse().getCookies().clear();
+        }
         Cookie.setCookie(exchange, "");
         exchange.getResponse().getHeaders().add("Location", "/");
         exchange.getResponse().setStatusCode(HttpStatus.MOVED_PERMANENTLY);
         //return Mono.just("redirect:/");
-        return Mono.just("{}");
+        return Mono.just("");
     }
 
     @RequestMapping(value = "/cookie", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
