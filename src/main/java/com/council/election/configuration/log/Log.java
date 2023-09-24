@@ -1,5 +1,6 @@
 package com.council.election.configuration.log;
 
+import com.council.election.configuration.exception.HttpException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -228,12 +229,7 @@ public class Log {
 
     @JsonIgnore
     public Log setStackTrace(Throwable throwable) {
-        StringWriter stackTrace = new StringWriter();
-        if (throwable == null) {
-            return null;
-        }
-        throwable.printStackTrace(new PrintWriter(stackTrace));
-        this.stackTrace = stackTrace.toString();
+        this.stackTrace = HttpException.convertStackTraceAsString(throwable);
         return this;
     }
 

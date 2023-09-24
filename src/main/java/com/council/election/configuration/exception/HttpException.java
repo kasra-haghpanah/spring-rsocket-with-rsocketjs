@@ -1,13 +1,15 @@
 package com.council.election.configuration.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.council.election.configuration.log.Log;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class HttpException extends RuntimeException {
 
@@ -38,5 +40,14 @@ public class HttpException extends RuntimeException {
         serverWebExchange.getResponse().getHeaders().setContentType(mediaType);
         serverWebExchange.getResponse().setStatusCode(httpStatus);
         return serverWebExchange.getResponse().writeWith(Mono.just(dataBuffer));
+    }
+
+    public static String convertStackTraceAsString(Throwable throwable) {
+        if (throwable == null) {
+            return "";
+        }
+        StringWriter stackTrace = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(stackTrace));
+        return stackTrace.toString();
     }
 }
