@@ -1,6 +1,6 @@
 package com.council.election.ddd.controller.rsocket;
 
-import com.council.election.configuration.exception.GlobalErrorHandler;
+import com.council.election.configuration.exception.HttpException;
 import com.council.election.configuration.mongo.ReactiveNativeMongo;
 import com.council.election.configuration.property.Properties;
 import com.council.election.configuration.rsocket.RSocketConfig;
@@ -122,7 +122,7 @@ public class UserRsocketController {
         });*/
         //return Mono.just(ex.getMessage() + " handled");
         //System.out.println(GlobalErrorHandler.getStackTrace(ex));
-        logger.info(GlobalErrorHandler.getStackTrace(ex));
+        logger.info(HttpException.convertStackTraceAsString(ex));
         if (ex instanceof DuplicateKeyException) {
             return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body("duplicateKey"));
         }
