@@ -64,13 +64,13 @@ public class OpenApiConfigs {
                 .security(List.of(new SecurityRequirement().addList(securitySchemeName)))
                 .info(
                         new Info()
-                                .title("election-spring-rsocket-with-rsocket-js")
+                                .title("spring-rsocket-with-rsocket-js")
                                 .version(Properties.getSwaggerVersion())
                                 .license(new License().name("Apache 2.0").url("http://springdoc.org"))
                 )
                 .externalDocs(new ExternalDocumentation()
                         .description("this sample is about an implementation of SpringRsocket with RsocketJs")
-                        .url("https://github.com/kasra-haghpanah/election-spring-rsocket-with-rsocket-js"));
+                        .url("https://github.com/kasra-haghpanah/spring-rsocket-with-rsocketjs"));
 
     }
 
