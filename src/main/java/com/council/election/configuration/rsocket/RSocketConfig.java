@@ -54,7 +54,6 @@ public class RSocketConfig {
 
     // for broadcasting in rsocket cloud gateway you can use redis for store user's session as a live object
     public static final Map<String, Queue<RSocketRequester>> connectedClients = new ConcurrentHashMap<String, Queue<RSocketRequester>>();
-    final Environment environment;
     final Object host;
     final Object port;
     final String path;
@@ -66,15 +65,13 @@ public class RSocketConfig {
     }
 
     public RSocketConfig(
-            Environment environment,
             JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager,
             UserService userService
     ) {
-        this.environment = environment;
         this.host = Properties.getServerHost();
         Integer portInteger = Properties.getServerPort();
         this.port = portInteger < 1 ? "8080" : portInteger + "";
-        this.path = environment.getProperty("spring.rsocket.server.mapping-path");
+        this.path = Properties.getRsocketServerMappingPath();
         this.jwtReactiveAuthenticationManager = jwtReactiveAuthenticationManager;
         this.userService = userService;
     }
