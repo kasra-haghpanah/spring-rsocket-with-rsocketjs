@@ -25,9 +25,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.server.ServerWebExchange;
+import org.w3c.dom.stylesheets.LinkStyle;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.List;
 
 @DependsOn("jacksonConfig")
 @Configuration
@@ -36,6 +38,7 @@ import java.util.Arrays;
 public class SecurityConfig implements ServerSecurityContextRepository {
 
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
+
     private final ObjectMapper objectMapper;
 
     public SecurityConfig(
@@ -60,9 +63,18 @@ public class SecurityConfig implements ServerSecurityContextRepository {
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
-        String token = null;
-        if (request.getCookies().get("Cookie") != null) {
-            token = request.getCookies().get("Cookie").get(0).getValue();
+        String token = "";
+        String cookie = request.getCookies().get("Cookie").get(0).getValue();
+        if (!cookie.equals("")) {
+            token = cookie;
+        } else {
+            List<String> authorizations = request.getHeaders().get("authorization");
+            if (authorizations != null && authorizations.size() > 0) {
+                token = authorizations.get(0);
+            }
+        }
+        if (token.indexOf("Bearer ") == 0) {
+            token = token.substring(7);
         }
 
         if (token != null && !token.equals("")) {
