@@ -11,6 +11,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -81,6 +82,9 @@ public class Filter implements WebFilter, WebExceptionHandler {
         Log log = Log.create(this.objectMapper, logger);
         exchange.getResponse().getHeaders().set("server", serverName);
         exchange.getResponse().getHeaders().set("X-Powered-By", poweredBy);
+//        exchange.getPrincipal().subscribe(token->{
+//            System.out.println(token);
+//        });
 
 
         ServerWebExchangeDecorator exchangeDecorator = new ServerWebExchangeDecorator(exchange) {
@@ -184,6 +188,12 @@ public class Filter implements WebFilter, WebExceptionHandler {
                         log.setUser((Jwt) jwt);
                     }
                     log.setExecutionTime(startTime);
+                    if (!JsonUtil.isBlank(log.getStackTrace())) {
+                        if (log.getStackTrace().indexOf("token cannot be empty") > -1) {
+                            exchange.getResponse().setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+                            exchange.getResponse().getHeaders().add("Location", "/");
+                        }
+                    }
                     log.info();
                     return Mono.empty();
                 });

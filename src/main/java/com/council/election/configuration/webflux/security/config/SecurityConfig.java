@@ -1,6 +1,7 @@
 package com.council.election.configuration.webflux.security.config;
 
 import com.council.election.configuration.exception.HttpException;
+import com.council.election.configuration.log.JsonUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
@@ -25,7 +26,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.server.ServerWebExchange;
-import org.w3c.dom.stylesheets.LinkStyle;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
@@ -77,16 +77,17 @@ public class SecurityConfig implements ServerSecurityContextRepository {
             token = token.substring(7);
         }
 
-        if (token != null && !token.equals("")) {
+
+        if (!JsonUtil.isBlank(token)) {
             Authentication auth = new BearerTokenAuthenticationToken(token);  //new UsernamePasswordAuthenticationToken(authToken, authToken);
 
             return this.jwtReactiveAuthenticationManager.authenticate(auth).map((authentication) -> {
                 return new SecurityContextImpl(authentication);
             });
-
-        } else {
-            return Mono.empty();
         }
+        return Mono.empty();
+
+
     }
 
     @Bean
@@ -151,14 +152,15 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                         "/signin",
                         "/signup",
                         "/forgot/**",
-                        "/inherit/**"
+                        "/inherit/**",
+                        "/"
                 )
                 .permitAll()
 
                 .pathMatchers(HttpMethod.GET,
                         "/js/**", "/lib/**", "/css/**", "/fonts/**", "/view/**", "/",
                         "/favicon.ico", "/css/**", "/custom/**",
-                        "/fonts/**", "/images/**", // "/activate/**",
+                        "/fonts/**", "/images/**",
                         "/logout", "/active/**"
                 ).permitAll()
                 .pathMatchers(HttpMethod.PUT, "/signup", "/signin").permitAll()
