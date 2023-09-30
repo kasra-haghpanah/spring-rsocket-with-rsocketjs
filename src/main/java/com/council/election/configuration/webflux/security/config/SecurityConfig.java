@@ -64,7 +64,10 @@ public class SecurityConfig implements ServerSecurityContextRepository {
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
         String token = "";
-        String cookie = request.getCookies().get("Cookie").get(0).getValue();
+        String cookie = "";
+        if (request.getCookies().get("Cookie") != null && request.getCookies().get("Cookie").size() > 0) {
+            cookie = request.getCookies().get("Cookie").get(0).getValue();
+        }
         if (!cookie.equals("")) {
             token = cookie;
         } else {
