@@ -77,7 +77,8 @@ public class SecurityConfig implements ServerSecurityContextRepository {
             }
         }
         if (token.indexOf("Bearer ") == 0) {
-            token = token.substring(7);
+            token = token.replaceAll("(Bearer )+", "");
+            //token = token.substring(7);
         }
 
 
