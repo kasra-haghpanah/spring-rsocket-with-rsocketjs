@@ -8,6 +8,8 @@ import com.mongodb.connection.SocketSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -34,6 +36,15 @@ public class ElectionReactiveMongoConfig {
     // https://docs.mongodb.com/manual/reference/connection-string/
     // https://docs.mongodb.com/manual/reference/connection-string/#urioption.authSource
     // https://docs.mongodb.com/drivers/reactive-streams/
+
+    //***************************************************************
+    // https://www.baeldung.com/spring-reinitialize-singleton-bean#:~:text=Reinitializing%20the%20Singleton%20Bean,the%20context%20reinitialize%20it%20automatically.
+/*    public void reinitializeBean() {
+        DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) applicationContext.getAutowireCapableBeanFactory();
+        registry.destroySingleton("ConfigManager");
+        registry.registerSingleton("ConfigManager", new ConfigManager(filePath));
+    }*/
+    //***************************************************************
 
     // mongod --replSet rs0 --port 27017 --bind_ip localhost --dbpath "C:/Program Files/MongoDB/Server/4.2/data/rs0-0"  --oplogSize 128
     @Retryable(include = {ConnectException.class},
