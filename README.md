@@ -18,7 +18,7 @@ This application works on Spring boot 3.0.0 or later and JDK 17 or later
 - [x] [Spring Webflux](https://github.com/spring-projects/spring-framework/tree/main/spring-webflux)
 - [x] [Spring Security](https://github.com/spring-projects/spring-security)
 - [x] [Spring Rsocket Security](https://github.com/spring-tips/rsocket-security)
-- [x] [Spring Data Mongodb Reactive](https://github.com/spring-projects/spring-data-mongodb/blob/main/src/main/asciidoc/reference/reactive-mongo-repositories.adoc)
+- [x] [Spring Data Reactive Mongodb](https://github.com/spring-projects/spring-data-mongodb/blob/main/src/main/asciidoc/reference/reactive-mongo-repositories.adoc)
 - [x] [Springdoc Openapi](https://github.com/springdoc/springdoc-openapi)
 - [x] [Spring Retry](https://github.com/spring-projects/spring-retry)
 - [x] [Spring thymeleaf](https://github.com/thymeleaf/thymeleaf-spring)
