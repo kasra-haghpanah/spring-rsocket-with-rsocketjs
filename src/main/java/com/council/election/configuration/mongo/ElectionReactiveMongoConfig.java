@@ -37,11 +37,12 @@ public class ElectionReactiveMongoConfig {
 
     // mongod --replSet rs0 --port 27017 --bind_ip localhost --dbpath "C:/Program Files/MongoDB/Server/4.2/data/rs0-0"  --oplogSize 128
     @Retryable(include = {ConnectException.class},
-            maxAttemptsExpression = "3",
+            maxAttemptsExpression = "300000",
             backoff = @Backoff(
-                    delayExpression = "20000",
-                    maxDelayExpression = "2",
-                    multiplierExpression = "500000"
+                    delay = 150000l
+//                    delayExpression = "20000",
+//                    maxDelayExpression = "2",
+//                    multiplierExpression = "500000"
             ))
     @Bean("electionReactiveMongoDatabaseFactory")
     public ReactiveMongoDatabaseFactory reactiveElectionMongoDatabaseFactory() {
