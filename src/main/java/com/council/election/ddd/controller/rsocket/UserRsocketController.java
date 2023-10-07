@@ -513,11 +513,6 @@ public class UserRsocketController {
 
     @MessageMapping("download")
     public Flux<DataBuffer> download(@Payload String id) {
-        reactiveNativeMongo.getReactiveMongoGridFs().getFsFileById(id)
-                .map(document -> {
-                    return document;
-                })
-                .subscribe();
         return reactiveNativeMongo.getReactiveMongoGridFs().getFileByFileId(id).onBackpressureDrop();
     }
 
