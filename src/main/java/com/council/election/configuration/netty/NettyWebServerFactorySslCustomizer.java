@@ -19,7 +19,7 @@ public class NettyWebServerFactorySslCustomizer implements WebServerFactoryCusto
     public void customize(NettyReactiveWebServerFactory serverFactory) {
 //        Ssl ssl = new Ssl();
 //        ssl.setEnabled(true);
-//        ssl.setKeyStore("classpath:sample.jks");
+//        ssl.setKeyStore("classpath:sample.jks"); classpath => /src/main/resources/
 //        ssl.setKeyAlias("alias");
 //        ssl.setKeyPassword("password");
 //        ssl.setKeyStorePassword("secret");
