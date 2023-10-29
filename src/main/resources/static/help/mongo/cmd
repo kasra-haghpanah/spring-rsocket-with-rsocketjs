@@ -1,0 +1,35 @@
+//create database
+use myNewDB
+db.myNewCollection1.insertOne( { x: 1 } )
+
+//create database
+use simple;
+db.simple.insert({"name":"simple"});
+
+
+//create authentication
+db.createUser(
+{
+"user": "admin",
+"pwd": "pass",
+"roles": [ { "role": "userAdminAnyDatabase", "db": "admin" } ]
+}
+)
+
+//delete
+db.getCollection("user").remove({_id: ObjectId("5f2da6db25e39419543a4260")})
+
+//findAll
+db.getCollection("user").find()
+
+//join
+db.getCollection("friend").aggregate([
+    { $lookup:
+            {
+                from: 'person',
+                localField: 'personId',
+                foreignField: '_id',
+                as: 'orderdetails'
+            }
+    }
+]);
