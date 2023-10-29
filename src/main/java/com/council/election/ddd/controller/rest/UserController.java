@@ -358,40 +358,8 @@ public class UserController {
             @RequestHeader("mobile") final String mobile,
             @AuthenticationPrincipal final Mono<Jwt> jwtToken
     ) throws ExecutionException, InterruptedException {
-//        if (cookie == null || cookie.equals("") || cookie.indexOf("Cookie=") != 0) {
-//            return Flux.empty();
-//        }
-        List<UserDTO> userDTOS = jwtToken.flatMap(jwt -> {
 
-                    boolean isAdmin = false;
-                    Map<String, Object> claims = jwt.getClaims();
-                    String phone = (String) claims.get("sub");
-                    List<String> roles = (List<String>) claims.get("scope");
-                    for (int i = 0; i < roles.size(); i++) {
-                        if (roles.get(i).equals("ADMIN")) {
-                            isAdmin = true;
-                            break;
-                        }
-                    }
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("isAdmin", isAdmin);
-                    map.put("phone", phone);
-                    return Mono.just(map);
-                })
-                .flatMapMany(map -> {
-                    if (mobile == null || mobile.equals("")) {
-                        if ((boolean) map.get("isAdmin")) {
-                            return userService.getRoots();
-                        }
-
-                        return userService.getUsersByPhoneParentIdWithParent((String) map.get("phone"));
-
-                    }
-
-
-                    return userService.getUsersByPhoneParentId((String) map.get("phone"));
-
-                })
+        List<UserDTO> userDTOS = users(mobile, jwtToken)
                 .reduce(new ArrayList<UserDTO>(), (list, node) -> {
                     list.add(node);
                     return list;
