@@ -364,7 +364,6 @@ public class UserController {
                     list.add(node);
                     return list;
                 })
-                .subscribeOn(Schedulers.boundedElastic())
                 .toFuture()
                 .get();
         return userDTOS;
