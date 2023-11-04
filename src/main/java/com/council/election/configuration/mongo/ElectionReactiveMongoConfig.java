@@ -50,10 +50,10 @@ public class ElectionReactiveMongoConfig {
     @Retryable(include = {ConnectException.class},
             maxAttemptsExpression = "300000",
             backoff = @Backoff(
-                    delay = 150000l
-//                    delayExpression = "20000",
-//                    maxDelayExpression = "2",
-//                    multiplierExpression = "500000"
+                    delay = 150000l,
+                    delayExpression = "20000",
+                    maxDelayExpression = "2",
+                    multiplierExpression = "500000"
             ))
     @Bean("electionReactiveMongoDatabaseFactory")
     public ReactiveMongoDatabaseFactory reactiveElectionMongoDatabaseFactory() {
