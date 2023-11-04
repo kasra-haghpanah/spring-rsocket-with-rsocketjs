@@ -44,6 +44,7 @@ public class JacksonConfig {
     @DependsOn({"objectMapper"})
     public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization(ObjectMapper objectMapper) {
         return (builder) -> {
+
             builder.timeZone(Properties.getTimeZone());
             builder.configure(objectMapper);
             builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
