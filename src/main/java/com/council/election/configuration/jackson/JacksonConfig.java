@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Primary;
 import java.time.format.DateTimeFormatter;
 
 @DependsOn("properties")
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class JacksonConfig {
 
     private static final String dateFormat = "yyyy-MM-dd";
@@ -42,10 +42,10 @@ public class JacksonConfig {
 
     @Bean
     @DependsOn({"objectMapper"})
-    public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization() {
+    public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization(ObjectMapper objectMapper) {
         return (builder) -> {
             builder.timeZone(Properties.getTimeZone());
-            builder.configure(objectMapper());
+            builder.configure(objectMapper);
             builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
             builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
             builder.serializers(new LocalTimeSerializer(DateTimeFormatter.ofPattern(localTimeFormat)));
