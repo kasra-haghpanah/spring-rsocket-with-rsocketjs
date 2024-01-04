@@ -8,7 +8,7 @@ This application works on Spring boot 3.0.0 or later and JDK 17 or later
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.1.5</version>
+    <version>3.2.0</version>
     <relativePath/>
 </parent>
 ```
