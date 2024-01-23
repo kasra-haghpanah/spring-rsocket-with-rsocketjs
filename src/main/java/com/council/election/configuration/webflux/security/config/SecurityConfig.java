@@ -109,19 +109,30 @@ public class SecurityConfig implements ServerSecurityContextRepository {
     @Bean
     public SecurityWebFilterChain securitygWebFilterChain(ServerHttpSecurity http) {
         return http
-                .exceptionHandling()
-                .authenticationEntryPoint((exchange, authenticationException) -> {
-                    return Mono.fromRunnable(() -> {
-                        throw new HttpException(HttpStatus.UNAUTHORIZED.toString(), HttpStatus.UNAUTHORIZED);
+                .exceptionHandling(exceptionHandlingSpec -> {
+
+                    exceptionHandlingSpec.authenticationEntryPoint((exchange, authenticationException) -> {
+                        return Mono.fromRunnable(() -> {
+                            throw new HttpException(HttpStatus.UNAUTHORIZED.toString(), HttpStatus.UNAUTHORIZED);
+                        });
                     });
-                }).accessDeniedHandler((exchange, authenticationException) -> {
-                    return Mono.fromRunnable(() -> {
-                        throw new HttpException(HttpStatus.FORBIDDEN.toString(), HttpStatus.FORBIDDEN);
+
+                    exceptionHandlingSpec.accessDeniedHandler((exchange, authenticationException) -> {
+                        return Mono.fromRunnable(() -> {
+                            throw new HttpException(HttpStatus.FORBIDDEN.toString(), HttpStatus.FORBIDDEN);
+                        });
                     });
-                }).and()
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
+
+                })
+                .csrf(csrfSpec -> {
+                    csrfSpec.disable();
+                })
+                .formLogin(formLoginSpec -> {
+                    formLoginSpec.disable();
+                })
+                .httpBasic(httpBasicSpec -> {
+                    httpBasicSpec.disable();
+                })
 /*
                 .logout(logoutSpec -> {
                     logoutSpec.logoutUrl("/logout");
@@ -140,49 +151,51 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                // .deleteCookies("Cookie")
 */
 
-                .cors()
-                .configurationSource(corsConfigurationSource())
-                .and()
+                .cors(corsSpec -> {
+                    corsSpec.configurationSource(corsConfigurationSource());
+                })
                 .authenticationManager(this.jwtReactiveAuthenticationManager)
                 .securityContextRepository(this)
-                .authorizeExchange()
-                .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .pathMatchers(
-                        "/v3/api-docs/**",
-                        "/api-docs/**",
-                        "/webjars/**",
-                        "/cookie",
-                        "/change/**",
-                        "/signin",
-                        "/signup",
-                        "/forgot/**",
-                        "/inherit/**",
-                        "/"
-                )
-                .permitAll()
+                .authorizeExchange(authorizeExchangeSpec -> {
 
-                .pathMatchers(HttpMethod.GET,
-                        "/js/**", "/lib/**", "/css/**", "/fonts/**", "/view/**", "/",
-                        "/favicon.ico", "/css/**", "/custom/**",
-                        "/fonts/**", "/images/**",
-                        "/logout", "/active/**"
-                ).permitAll()
-                .pathMatchers(HttpMethod.PUT, "/signup", "/signin").permitAll()
-                //.pathMatchers(HttpMethod.GET, "/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                .pathMatchers("/**")
-                .access((mono, context) -> {
-                    //context.getExchange().getRequest().getCookies().toSingleValueMap();
-                    return mono
-                            .map(auth -> auth.getAuthorities().stream()
-                                    .filter(e -> {
-                                        return e.getAuthority().equals("ROLE_ADMIN");
-                                    })
-                                    .count() > 0)
-                            .map(AuthorizationDecision::new);
+                    authorizeExchangeSpec.pathMatchers(HttpMethod.OPTIONS).permitAll()
+                            .pathMatchers(
+                                    "/v3/api-docs/**",
+                                    "/api-docs/**",
+                                    "/webjars/**",
+                                    "/cookie",
+                                    "/change/**",
+                                    "/signin",
+                                    "/signup",
+                                    "/forgot/**",
+                                    "/inherit/**",
+                                    "/"
+                            )
+                            .permitAll()
+
+                            .pathMatchers(HttpMethod.GET,
+                                    "/js/**", "/lib/**", "/css/**", "/fonts/**", "/view/**", "/",
+                                    "/favicon.ico", "/css/**", "/custom/**",
+                                    "/fonts/**", "/images/**",
+                                    "/logout", "/active/**"
+                            ).permitAll()
+                            .pathMatchers(HttpMethod.PUT, "/signup", "/signin").permitAll()
+                            //.pathMatchers(HttpMethod.GET, "/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                            .pathMatchers("/**")
+                            .access((mono, context) -> {
+                                //context.getExchange().getRequest().getCookies().toSingleValueMap();
+                                return mono
+                                        .map(auth -> auth.getAuthorities().stream()
+                                                .filter(e -> {
+                                                    return e.getAuthority().equals("ROLE_ADMIN");
+                                                })
+                                                .count() > 0)
+                                        .map(AuthorizationDecision::new);
+                            })
+                            .anyExchange().authenticated();
+
                 })
-                .anyExchange().authenticated()
-
-                .and().build();
+                .build();
     }
 
 
