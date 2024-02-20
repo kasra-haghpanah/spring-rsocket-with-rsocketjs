@@ -13,7 +13,7 @@ This application works on Spring boot 3.0.0 or later and JDK 17 or later
 </parent>
 ```
 
-# Technologies
+# References
 - [x] [Spring Rsocket](https://github.com/benwilcock/spring-rsocket-demo)
 - [x] [Spring Webflux](https://github.com/spring-projects/spring-framework/tree/main/spring-webflux)
 - [x] [Spring Security](https://github.com/spring-projects/spring-security)
