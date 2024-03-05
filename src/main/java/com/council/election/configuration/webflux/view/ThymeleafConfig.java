@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
@@ -23,6 +24,7 @@ import reactor.core.publisher.Mono;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kasra.haghpanah on 11/9/2019.
@@ -128,13 +130,16 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
     @Override
     // @Ap(SwaggerConfig.class)
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(resourceHandler).addResourceLocations(resourceLocations);
+        registry.addResourceHandler(resourceHandler)
+                .addResourceLocations(resourceLocations)
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
 
         registry.addResourceHandler("/swagger-ui")
                 .addResourceLocations("classpath:/META-INF/resources/");
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
     }
 
 
@@ -147,8 +152,8 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
         resolver.setCharacterEncoding("UTF-8");
         resolver.setTemplateMode(TemplateMode.HTML);
 
-        resolver.setCacheable(true);
-        resolver.setCacheablePatterns(Set.of(MessageFormat.format("/{0}/**", Properties.getViewVersion())));
+        //resolver.setCacheable(true);
+        //resolver.setCacheablePatterns(Set.of(MessageFormat.format("/{0}/**", Properties.getViewVersion())));
 
         resolver.setCheckExistence(false);
         return resolver;
