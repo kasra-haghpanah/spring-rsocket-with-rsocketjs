@@ -127,8 +127,8 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
     }
 
     @Override
-    // @Ap(SwaggerConfig.class)
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // https://www.baeldung.com/cachable-static-assets-with-spring-mvc
         registry.addResourceHandler(resourceHandler)
                 .addResourceLocations(resourceLocations)
                 .setCacheControl(CacheControl.maxAge(360, TimeUnit.SECONDS));
