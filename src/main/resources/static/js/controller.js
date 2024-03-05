@@ -147,8 +147,8 @@ demoApp.run(['$rootScope', '$translate', '$http', '$location', async function ($
                         $rootScope.setMetadata(response.data.metadata);
                         //if (window.cancels.length == 0) {
                         window.rsocket = await $rootScope.openRsocket($rootScope.token);
-                        if ($location.$$path == "/signin") {
-                            $location.path("/tree");
+                        if ($location.$$path == "/ng/signin") {
+                            $location.path("/ng/tree");
                         }
                         resolve(window.rsocket);
                         // }
@@ -676,7 +676,7 @@ demoApp.run(['$rootScope', '$translate', '$http', '$location', async function ($
                         if (response.data.me)
 
                             var rsocket = await $rootScope.openRsocket(response.data.token);
-                        window.location.href = "/#!/tree";
+                        window.location.href = "/ng/tree";
                     }
 
                 },

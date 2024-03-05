@@ -15,7 +15,12 @@
 })();
 
 
-demoApp.config(['$routeProvider', '$httpProvider', '$sceDelegateProvider', function ($routeProvider, $httpProvider, $sceDelegateProvider) {
+demoApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDelegateProvider', function ($routeProvider, $locationProvider, $httpProvider, $sceDelegateProvider) {
+
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    });
 
     $sceDelegateProvider.resourceUrlWhitelist([
         // Allow same origin resource loads.
@@ -26,32 +31,32 @@ demoApp.config(['$routeProvider', '$httpProvider', '$sceDelegateProvider', funct
 
 
     $routeProvider
-        .when('/signin', {
+        .when('/ng/signin', {
             controller: 'SigninController',
             templateUrl: '../view/signin.htm'
         })
-        .when('/forgot', {
+        .when('/ng/forgot', {
             controller: 'SignupController',
             templateUrl: '../view/forgot.htm'
         })
-        .when('/signup', {
+        .when('/ng/signup', {
             controller: 'SignupController',
             templateUrl: '../view/signup.htm'
         })
-        .when('/change/password/:phone/:code', {
+        .when('/ng/change/password/:phone/:code', {
             controller: 'SignupController',
             templateUrl: '../view/change.htm'
         })
-        .when('/tree', {
+        .when('/ng/tree', {
             controller: 'TreeController',
             templateUrl: '../view/tree.htm'
         })
-        .when('/content', {
+        .when('/ng/content', {
             controller: 'ContentController',
             templateUrl: '../view/content.htm'
         })
         .otherwise({
-            redirectTo: '/signin'
+            redirectTo: '/ng/signin'
         });
 
 

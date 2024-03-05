@@ -177,7 +177,8 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                                     "/js/**", "/lib/**", "/css/**", "/fonts/**", "/view/**", "/",
                                     "/favicon.ico", "/css/**", "/custom/**",
                                     "/fonts/**", "/images/**",
-                                    "/logout", "/active/**"
+                                    "/logout", "/active/**",
+                                    "/ng/signin","/ng/forgot","/ng/signup","/ng/change/password/**","/ng/tree","/ng/content"
                             ).permitAll()
                             .pathMatchers(HttpMethod.PUT, "/signup", "/signin").permitAll()
                             //.pathMatchers(HttpMethod.GET, "/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")

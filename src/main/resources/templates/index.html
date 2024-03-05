@@ -156,7 +156,7 @@
 </div>-->
 
 <div>
-    <div class="bd-example" ng-if="location.path() == '/tree' || location.path() == '/content'">
+    <div class="bd-example" ng-if="location.path() == '/ng/tree' || location.path() == '/ng/content'">
         <ul class="nav nav-tabs">
 
             <!--            <li class="nav-item dropdown-submenu" >
@@ -184,21 +184,21 @@
                         </li>-->
 
             <li ng-if="level >-1" class="nav-item">
-                <a class="nav-link" href="/#!{{location.path()}}" ng-click="openModel('Settings')">{{'Settings' | translate}}</a>
+                <a class="nav-link" href="/#!/{{location.path()}}" ng-click="openModel('Settings')">{{'Settings' | translate}}</a>
             </li>
             <li class="nav-item">
-                <a ng-class="location.path() == '/tree' ? 'nav-link active':'nav-link'" href="/#!/tree">{{'UsersManagement'
+                <a ng-class="location.path() == '/ng/tree' ? 'nav-link active':'nav-link'" href="/ng/tree">{{'UsersManagement'
                     | translate}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ng-class="location.path() == '/content' ? 'nav-link active':'nav-link'"
-                   href="/#!/content">{{'Content' | translate}}</a>
+                <a class="nav-link" ng-class="location.path() == '/ng/content' ? 'nav-link active':'nav-link'"
+                   href="/ng/content">{{'Content' | translate}}</a>
             </li>
             <li ng-if="level==0" class="nav-item">
-                <a class="nav-link" href="/#!{{location.path()}}" ng-click="openModel()">{{'Upload' | translate}}</a>
+                <a class="nav-link" href="/#!/{{location.path()}}" ng-click="openModel()">{{'Upload' | translate}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/logout" ng-click="openModel()">{{'Logout' | translate}}</a>
+                <a class="nav-link" href="/ng/logout" ng-click="openModel()">{{'Logout' | translate}}</a>
             </li>
         </ul>
     </div>

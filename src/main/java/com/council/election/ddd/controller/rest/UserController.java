@@ -42,9 +42,17 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-    public Mono<String> index() {
+    @RequestMapping(value = "/ng/**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    public Mono<String> ng() {
         return Mono.just("index");
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    public Mono<Void> index(ServerWebExchange exchange) {
+
+        exchange.getResponse().getHeaders().add("Location", "/ng/signin");
+        exchange.getResponse().setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+        return Mono.empty();
     }
 
     @ResponseBody
@@ -188,7 +196,7 @@ public class UserController {
                 .flatMap(userModel -> {
 
                     if (userModel.getUsername() != null && userModel.getActivationCode() != null) {
-                        return Mono.just(String.format("redirect:/#!/change/password/%s/%s", userModel.getUsername(), userModel.getActivationCode()));
+                        return Mono.just(String.format("redirect:/change/password/%s/%s", userModel.getUsername(), userModel.getActivationCode()));
                     }
                     return Mono.just("redirect:/");
                 });
