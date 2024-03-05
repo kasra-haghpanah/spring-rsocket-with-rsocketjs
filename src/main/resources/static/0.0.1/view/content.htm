@@ -30,7 +30,7 @@
                     <img
                             ng-if="item.fileId != null && item.contentType.indexOf('audio') > -1 && item.isDownloaded != true"
                             alt="audio"
-                            src="/images/audio.jpg"
+                            src="/{{viewVersion}}/images/audio.jpg"
                             ng-click="download(item)"
                             style="width: 100%;height: 500px;cursor: pointer;"
                     />
@@ -38,7 +38,7 @@
                            preload="metadata"
                            id="{{item.id}}"
                            ng-focus="pauseVideo(item)"
-                           poster="/images/audio.jpg"
+                           poster="/{{viewVersion}}/images/audio.jpg"
                            class="col-12"
                            preload="metadata"
                            controls

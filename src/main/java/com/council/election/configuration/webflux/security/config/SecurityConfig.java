@@ -186,6 +186,7 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                                     MessageFormat.format("/{0}/custom/**", Properties.getViewVersion()),
                                     MessageFormat.format("/{0}/fonts/**", Properties.getViewVersion()),
                                     MessageFormat.format("/{0}/images/**", Properties.getViewVersion()),
+                                    MessageFormat.format("/images/**", Properties.getViewVersion()),
                                     "/logout", "/active/**",
                                     "/ng/signin", "/ng/forgot", "/ng/signup", "/ng/change/password/**", "/ng/tree", "/ng/content"
                             ).permitAll()

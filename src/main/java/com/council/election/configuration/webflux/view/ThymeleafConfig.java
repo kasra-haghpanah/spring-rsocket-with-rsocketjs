@@ -47,18 +47,20 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
                 MessageFormat.format("/{0}/js/**", Properties.getViewVersion()),
                 MessageFormat.format("/{0}/lib/**", Properties.getViewVersion()),
                 MessageFormat.format("/{0}/view/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/favicon.**", Properties.getViewVersion())
+                MessageFormat.format("/{0}/favicon.**", Properties.getViewVersion()),
+                "/favicon.**"
         };
 
         resourceLocations = new String[]{
                 MessageFormat.format("classpath:static/{0}/css/", Properties.getViewVersion()),
                 MessageFormat.format("classpath:static/{0}/custom/", Properties.getViewVersion()),
                 MessageFormat.format("classpath:static/{0}/fonts/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/images/", Properties.getViewVersion()),
                 MessageFormat.format("classpath:static/{0}/js/", Properties.getViewVersion()),
                 MessageFormat.format("classpath:static/{0}/lib/", Properties.getViewVersion()),
                 MessageFormat.format("classpath:static/{0}/view/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/", Properties.getViewVersion())
+                MessageFormat.format("classpath:static/{0}/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/images/", Properties.getViewVersion()),
+                "classpath:static/images/"
         };
 
     }
