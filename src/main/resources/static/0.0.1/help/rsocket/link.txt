@@ -1,0 +1,38 @@
+https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-examples/package.json
+https://dzone.com/articles/rsocket-with-spring-boot-amp-js-zero-to-hero
+
+create package.json
+go to
+https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-examples/package.json
+1- create package.json
+
+Move inside the src/main/resources/publicdirectory and run
+2- npm install
+
+to download all the required dependencies Without changing directory,
+
+if browserify is not exist
+3- npm install -g browserify
+
+create index.js
+4- create index.js then add code this pattern
+
+    const {
+        RSocketClient,
+        // RSocketResumableTransport,
+        //JsonSerializer,
+        //IdentitySerializer,
+        BufferEncoders
+    } = require('rsocket-core');
+
+    const RSocketWebSocketClient = require('rsocket-websocket-client').default;
+    const {Flowable} = require('rsocket-flowable');
+
+        //add code
+        if (window.require === undefined) {
+            window.require = require;
+        }
+
+
+create browserify file.js
+5- browserify index.js > rsocket.js
