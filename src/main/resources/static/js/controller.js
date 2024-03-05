@@ -84,6 +84,13 @@ demoApp.run(['$rootScope', '$translate', '$http', '$location', async function ($
             return;
         }
 
+        if (arguments.length > 0 && item == 'close') {
+            $rootScope.isSettings = true;
+            $rootScope.modal = false;
+            $rootScope.file = null;
+            return;
+        }
+
         $rootScope.maxLength = 20;
         $rootScope.hasFile = true;
         if ($rootScope.uploadPercent == 100) {
