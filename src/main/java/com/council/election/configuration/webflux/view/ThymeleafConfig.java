@@ -23,7 +23,6 @@ import reactor.core.publisher.Mono;
 
 import java.text.MessageFormat;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -132,7 +131,7 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(resourceHandler)
                 .addResourceLocations(resourceLocations)
-                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
+                .setCacheControl(CacheControl.maxAge(360, TimeUnit.SECONDS));
 
         registry.addResourceHandler("/swagger-ui")
                 .addResourceLocations("classpath:/META-INF/resources/");
