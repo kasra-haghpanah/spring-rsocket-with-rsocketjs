@@ -66,62 +66,6 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
 
     }
 
-    /*
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-
-    //////////////////////////exception handling
-
-    @Override//for global exception handling
-    public Map<String, Object> getErrorAttributes(ServerRequest request, boolean includeStackTrace) {
-        Map<String, Object> map = null;
-        try {
-            map = super.getErrorAttributes(request, includeStackTrace);
-        } catch (Exception e) {
-
-        }
-        //map.put("status", HttpStatus.BAD_REQUEST);
-        //map.put("message", "username is required");
-
-        return map;
-    }
-
-    @Override
-    public Throwable getError(ServerRequest serverRequest) {
-        return super.getError(serverRequest);
-    }
-
-    @Override
-    public void storeErrorInformation(Throwable throwable, ServerWebExchange serverWebExchange) {
-        StringWriter errors = new StringWriter();
-        throwable.printStackTrace(new PrintWriter(errors));
-        System.out.println("for logging!" + errors.toString());
-
-        serverWebExchange.getRequest().getBody()
-                .map(body -> {
-                    return body;
-                    //  Jackson2JsonDecoder decoder = new Jackson2JsonDecoder();
-                    //  ResolvableType elementType = forClass(LoginRequestDto.class);
-                    //   return decoder.decodeToMono(body, elementType, MediaType.APPLICATION_JSON, Collections.emptyMap()).cast(LoginRequestDto.class);
-                }).next();
-
-    }
-
-
-    private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
-
-        Map<String, Object> errorPropertiesMap = getErrorAttributes(request, false);
-
-        return ServerResponse.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(errorPropertiesMap));
-    }*/
-
-    //////////////////////////exception handling
-
     protected int getHttpStatus(Map<String, Object> errorAttributes) {
         return ((Integer) errorAttributes.get("status")).intValue();
     }
