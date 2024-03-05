@@ -1,0 +1,33 @@
+------------------------------------------------------------------------------------------------------------
+JoinPoints: These are basically places in the actual business logic where you wish
+to insert some miscellaneous functionality that is necessary
+but not being part of the actual business logic. Some examples
+of JoinPints are: method call, method returning normally,
+method throwing an exception, instantiating an object, referring an object, etc...
+
+Pointcuts: Pointcuts are something like regular expressions which
+are used to identify joinpoints. Pontcuts are expressed using "pointcut expression language".
+Pointcuts are points of execution flow where the cross-cutting concern needs to be
+applied. There is a difference between Joinpoint and Pointcut; Joinpoints are more
+general and represents any control flow where we 'may choose to' introduce
+a cross-cutting concern while pointcuts identifies such joinpoints
+where 'we want to' introduce a cross-cutting concern.
+------------------------------------------------------------------------------------------------------------
+Joinpoint: A joinpoint is a candidate point in the Program Execution of the application where
+an aspect can be plugged in. This point could be a method being called,
+an exception being thrown, or even a field being modified.
+These are the points where your aspect’s code
+can be inserted into the normal flow of your application to add new behavior.
+Advice: This is an object which includes API invocations
+to the system wide concerns representing the action to perform at a joinpoint specified by a point.
+Pointcut: A pointcut defines at what joinpoints, the associated Advice
+should be applied. Advice can be applied at any joinpoint supported by the AOP framework.
+Of course, you don’t want to apply all of your aspects at all of the possible joinpoints.
+Pointcuts allow you to specify where you want your advice to be applied.
+Often you specify these pointcuts using explicit class and method names
+or through regular expressions that define matching class
+and method name patterns. Some AOP frameworks allow you
+to create dynamic pointcuts that determine whether to apply advice based
+on runtime decisions, such as the value of method parameters.
+The following image can help you understand Advice, PointCut, Joinpoints.
+------------------------------------------------------------------------------------------------------------

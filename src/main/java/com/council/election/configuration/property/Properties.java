@@ -62,6 +62,7 @@ public class Properties {
         //applicationContext.getId();
         //System.out.println(applicationName + "@@@@");
 
+        config.put("view.version", environment.getProperty("view.version"));
         config.put("spring.rsocket.server.mapping-path", environment.getProperty("spring.rsocket.server.mapping-path"));
         config.put("swagger.version", environment.getProperty("swagger.version"));
         config.put("time.zone", environment.getProperty("time.zone"));
@@ -106,6 +107,11 @@ public class Properties {
 
     private static <T> T get(String key, Class<T> T) {
         return (T) config.get(key);
+    }
+
+
+    public static String getViewVersion() {
+        return get("view.version", String.class);
     }
 
     public static String getRsocketServerMappingPath() {

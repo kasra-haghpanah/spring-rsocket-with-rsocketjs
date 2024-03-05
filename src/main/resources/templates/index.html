@@ -11,24 +11,26 @@
     <meta name="author" content="kasra haghpanah"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{'ElectionWebSite' | translate}}</title>
-    <link rel="shortcut icon" href="/images/favicon.ico"/>
-    <link media="all" href="/css/bootstrap.min.css" rel="stylesheet"/>
-    <link media="all" href="/css/docs.min.css" rel="stylesheet"/>
+    <meta name="description" th:content="${path}">
+    <view-version style="visibility:hidden;" th:text="${view_version}"></view-version>
+    <link rel="shortcut icon" th:href="@{'/'+${view_version}+'/images/favicon.ico'}"/>
+    <link media="all" th:href="@{'/'+${view_version}+'/css/bootstrap.min.css'}" rel="stylesheet"/>
+    <link media="all" th:href="@{'/'+${view_version}+'/css/docs.min.css'}" rel="stylesheet"/>
     <!--  https://gist.github.com/planetoftheweb/5d75a1ad45eb3059710747a3695fc068#file-glyphicons-css -->
-    <link media="all" href="/css/glyphicons.css" rel="stylesheet"/>
-    <link href="/custom/fullscreen.css" rel="stylesheet"/>
+    <link media="all" th:href="@{'/'+${view_version}+'/css/glyphicons.css'}" rel="stylesheet"/>
+    <link th:href="@{'/'+${view_version}+'/custom/fullscreen.css'}" rel="stylesheet"/>
 
-    <script type="text/javascript" src="/js/html5.js"></script>
-    <script type="text/javascript" src="/lib/angular.js"></script>
-    <script type="text/javascript" src="/lib/angular-route.js"></script>
-    <script type="text/javascript" src="/lib/angular-resource.js"></script>
-    <script type="text/javascript" src="/lib/angular-translate.min.js"></script>
-    <script type="text/javascript" src="/js/config.js"></script>
-    <script type="text/javascript" src="/js/controller.js"></script>
-    <script type="text/javascript" src="/js/directive.js"></script>
-    <script type="text/javascript" src="/js/treeview.js"></script>
-    <script type="text/javascript" src="/js/rsocket.js"></script>
-    <script type="text/javascript" src="/js/rsocket-extension.js"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/html5.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/lib/angular.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/lib/angular-route.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/lib/angular-resource.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/lib/angular-translate.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/config.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/controller.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/directive.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/treeview.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/rsocket.js'}"></script>
+    <script type="text/javascript" th:src="@{'/'+${view_version}+'/js/rsocket-extension.js'}"></script>
 
 
 </head>
@@ -40,8 +42,8 @@
         <div class="modal-dialog modal-lg" role="document" style="opacity:1;height: 80%;">
             <div class="modal-content">
                 <div class="modal-header" style="background-color:{{color}};color: white;">
-                    <h5 ng-if="!$root.isSettings" id="metadata" class="modal-title">{{'Upload'| translate}}</h5>
-                    <h5 ng-if="$root.isSettings" class="modal-title">{{'Settings'| translate}}</h5>
+                    <h5 ng-if="!$root.isSettings" id="metadata" class="modal-title">{{'Upload' | translate}}</h5>
+                    <h5 ng-if="$root.isSettings" class="modal-title">{{'Settings' | translate}}</h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary"
@@ -96,7 +98,8 @@
 
 
                         <div class="row progress col-12">
-                            <div class="progress-bar" role="progressbar" style="width: {{uploadPercent}}%;background-color: {{$root.color}}"
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {{uploadPercent}}%;background-color: {{$root.color}}"
                                  aria-valuenow="{{uploadPercent}}" aria-valuemin="0" aria-valuemax="100">
                                 {{uploadPercent}}%
                             </div>
@@ -108,29 +111,30 @@
 
                     <div ng-if="$root.isSettings" class="row col-12 h-100 d-inline-block">
 
-                        <label class="row col-6 h5" >{{'Language' | translate}}</label>
-                        <select class="row col-6 h5" ng-model="$root.languageKey" onchange="window.changeLanguage(this)">
+                        <label class="row col-6 h5">{{'Language' | translate}}</label>
+                        <select class="row col-6 h5" ng-model="$root.languageKey"
+                                onchange="window.changeLanguage(this)">
                             <option selected="selected" value="fa">{{'BUTTON_LANG_FA' | translate}}</option>
                             <option value="en">{{'BUTTON_LANG_EN' | translate}}</option>
                         </select>
 
-                        <label class="row col-6 h5" >{{'TreeType' | translate}}</label>
+                        <label class="row col-6 h5">{{'TreeType' | translate}}</label>
                         <select ng-model="$root.treeType" class="row col-6 form-control">
                             <option ng-repeat="treeType in $root.treeTypes" value="{{treeType}}">{{treeType}}</option>
                         </select>
 
-                        <label class="row col-6 h5" >{{'Theme' | translate}}</label>
+                        <label class="row col-6 h5">{{'Theme' | translate}}</label>
                         <input type="color" ng-model="$root.color" class="row col-6 form-control">
 
                         </span>
 
-                        <label class="row col-6 h5" >{{'ShowDottedLine' | translate}}</label>
+                        <label class="row col-6 h5">{{'ShowDottedLine' | translate}}</label>
                         <select ng-model="$root.showLine" class="row col-6 form-control">
                             <option ng-repeat="showLine in $root.showLineOptions" value="{{showLine}}">{{showLine}}
                             </option>
                         </select>
 
-                        <label class="row col-6 h5" >{{'TreeSize' | translate}}</label>
+                        <label class="row col-6 h5">{{'TreeSize' | translate}}</label>
                         <select ng-model="$root.treeSize" class="row col-6 form-control">
                             <option ng-repeat="option in $root.options" value="{{option}}">{{option}}</option>
                         </select>
@@ -184,11 +188,12 @@
                         </li>-->
 
             <li ng-if="level >-1" class="nav-item">
-                <a class="nav-link" href="/#!/{{location.path()}}" ng-click="openModel('Settings')">{{'Settings' | translate}}</a>
+                <a class="nav-link" href="/#!/{{location.path()}}"
+                   ng-click="openModel('Settings')">{{'Settings' | translate}}</a>
             </li>
             <li class="nav-item">
                 <a ng-class="location.path() == '/ng/tree' ? 'nav-link active':'nav-link'" href="/ng/tree">{{'UsersManagement'
-                    | translate}}</a>
+                | translate}}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" ng-class="location.path() == '/ng/content' ? 'nav-link active':'nav-link'"

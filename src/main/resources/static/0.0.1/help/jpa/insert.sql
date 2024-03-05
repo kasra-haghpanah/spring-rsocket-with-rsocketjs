@@ -1,0 +1,1 @@
+INSERT INTO `user`(`activationCode`, `password`, `roles`, `username`) VALUES ('','{bcrypt}$2a$10$xoZC24iXe8tOd6owCudhUOIf6d.EtB.N7dK3Yr5nsCFyeK2D4MW7K','["ADMIN", "USER"]','kasra_khpk1985@yahoo.com')

@@ -9,6 +9,7 @@ import com.council.election.ddd.model.User;
 import com.council.election.ddd.service.UserService;
 import com.council.election.ddd.utility.Cookie;
 import org.springframework.http.codec.multipart.Part;
+import org.springframework.http.server.RequestPath;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -43,8 +45,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "/ng/**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-    public Mono<String> ng() {
-        return Mono.just("index");
+    public Mono<Rendering> ng(ServerWebExchange exchange) {
+        String value = exchange.getRequest().getPath().value();
+        String path = value.substring(value.lastIndexOf("/") + 1);
+        String version= Properties.getViewVersion();
+        return Mono.just(
+                Rendering.view("index")
+                        .modelAttribute("path", path)
+                        .modelAttribute("view_version",version)
+                        .build()
+        );
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)

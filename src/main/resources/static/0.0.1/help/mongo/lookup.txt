@@ -1,0 +1,53 @@
+---------------------------------------
+db.getCollection('party').insertMany([
+{ "_id" : "2", "name" : "party2" },
+{ "_id" : "5", "name" : "party5" },
+{ "_id" : "4", "name" : "party4" },
+{ "_id" : "1", "name" : "party1" },
+{ "_id" : "3", "name" : "party3" }
+]);
+---------------------------------------
+db.getCollection('address').insertMany([
+{ "_id" : "a3", "street" : "Address3", "party_id" : "2" },
+{ "_id" : "a6", "street" : "Address6", "party_id" : "5" },
+{ "_id" : "a1", "street" : "Address1", "party_id" : "1" },
+{ "_id" : "a5", "street" : "Address5", "party_id" : "5" },
+{ "_id" : "a2", "street" : "Address2", "party_id" : "1" },
+{ "_id" : "a4", "street" : "Address4", "party_id" : "3" }
+]);
+---------------------------------------
+db.getCollection('addressComment').insertMany([
+{ "_id" : "ac2", "address_id" : "a1", "comment" : "Comment2" }
+{ "_id" : "ac1", "address_id" : "a1", "comment" : "Comment1" }
+{ "_id" : "ac5", "address_id" : "a5", "comment" : "Comment6" }
+{ "_id" : "ac4", "address_id" : "a3", "comment" : "Comment4" }
+{ "_id" : "ac3", "address_id" : "a2", "comment" : "Comment3" }
+]);
+---------------------------------------
+
+
+db.getCollection('party').aggregate([
+  { "$lookup": {
+    "from": "address",
+    "let": { "partyId": "$_id" },
+    "pipeline": [
+      { "$match": { "$expr": { "$eq": ["$party_id", "$$partyId"] }}},
+      { "$lookup": {
+        "from": "addressComment",
+        "let": { "addressId": "$_id" },
+        "pipeline": [
+          { "$match": { "$expr": { "$eq": ["$address_id", "$$addressId"] }}}
+        ],
+        "as": "address2"
+      }}
+     // { "$unwind": "$address2" }
+    ],
+    "as": "address1"
+  }},
+  { $unwind:
+    {
+      path: "$address1",
+     // includeArrayIndex: <string>,
+      preserveNullAndEmptyArrays: true  // if is true for left join
+    } }
+])

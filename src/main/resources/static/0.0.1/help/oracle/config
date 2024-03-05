@@ -1,0 +1,5 @@
+host: 172.16.110.122
+port: 1525
+user: khaghpanah_develop
+pass: khaghpanah_develop
+service_name(SID): pdb_dev_ehs

@@ -1,0 +1,37 @@
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group col-md-12">
+                    <input type="password" ng-model="user.password" class="form-control col-md-10"
+                           placeholder="{{'Password' | translate}}">
+                </div>
+                <div class="form-group col-md-12">
+                    <input type="password" ng-model="user.repeatpassword" class="form-control col-md-10"
+                           placeholder="{{'RepeatPassword' | translate}}">
+                </div>
+                <div class="form-group col-md-12">
+                    <button class="btn btn-success" style="background-color: {{$root.color}}"
+                            type="button"
+                            ng-click="changePassword()"
+                            ng-disabled="(isEmpty(user.password) || isEmpty(phone,10) || isEmpty(code,5) || user.password != user.repeatpassword || isNaN(phone) || isNaN(code))">
+                        {{'ChangePassword' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-if="error !== undefined && error != null" class="row">
+        <div class="col-md-12">
+            <div>
+                <div ng-class="dir=='rtl'?'text-right':'text-left'" class="alert alert-danger alert-dismissible"
+                     role="alert">
+                    <strong>{{'Note' | translate}}:</strong>
+                    <div>{{ error }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

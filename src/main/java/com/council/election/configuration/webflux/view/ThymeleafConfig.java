@@ -1,8 +1,10 @@
 package com.council.election.configuration.webflux.view;
 
+import com.council.election.configuration.property.Properties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
@@ -17,59 +19,51 @@ import org.thymeleaf.spring6.view.reactive.ThymeleafReactiveViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import reactor.core.publisher.Mono;
-//import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by kasra.haghpanah on 11/9/2019.
  */
 @Configuration
 @EnableWebFlux
-/*@PropertySources({
-        @PropertySource("classpath:static/css/"),
-        @PropertySource("classpath:static/custom/"),
-        @PropertySource("classpath:static/fonts/"),
-        @PropertySource("classpath:static/images/"),
-        @PropertySource("classpath:static/js/"),
-        @PropertySource("classpath:static/lib/"),
-        @PropertySource("classpath:static/view/")
-})
-@Import(SwaggerConfig.class)*/
-//@EnableSwagger2
+@DependsOn({"properties"})
 public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultErrorAttributes implements ApplicationContextAware, ErrorAttributes*/ {
     //https://howtodoinjava.com/spring-webflux/spring-webflux-tutorial/
 
     ApplicationContext applicationContext;
+    public final String[] resourceHandler;
+    public final String[] resourceLocations;
 
-    public static final String[] resourceHandler = {
-            "/css/**",
-            "/custom/**",
-            "/fonts/**",
-            "/images/**",
-            "/js/**",
-            "/lib/**",
-            "/view/**",
-            "/favicon.**"
-            //,"/swagger-ui/**"
-    };
+    public ThymeleafConfig() {
 
-    public static final String[] resourceLocations = {
-            "classpath:static/css/",
-            "classpath:static/custom/",
-            "classpath:static/fonts/",
-            "classpath:static/images/",
-            "classpath:static/js/",
-            "classpath:static/lib/",
-            "classpath:static/view/",
-            "classpath:static/"
-//            ,"classpath:/META-INF/resources/"
-//            ,"classpath:/META-INF/resources/webjars/"
-    };
+        resourceHandler = new String[]{
+                MessageFormat.format("/{0}/css/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/custom/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/fonts/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/images/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/js/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/lib/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/view/**", Properties.getViewVersion()),
+                MessageFormat.format("/{0}/favicon.**", Properties.getViewVersion())
+        };
 
-/*
+        resourceLocations = new String[]{
+                MessageFormat.format("classpath:static/{0}/css/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/custom/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/fonts/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/images/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/js/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/lib/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/view/", Properties.getViewVersion()),
+                MessageFormat.format("classpath:static/{0}/", Properties.getViewVersion())
+        };
+
+    }
+
+    /*
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -130,7 +124,7 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
     }
 
     @Override
-   // @Ap(SwaggerConfig.class)
+    // @Ap(SwaggerConfig.class)
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(resourceHandler).addResourceLocations(resourceLocations);
 
@@ -139,7 +133,6 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        //.setCachePeriod(31556926);
     }
 
 
@@ -151,7 +144,10 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
         resolver.setSuffix(".html");
         resolver.setCharacterEncoding("UTF-8");
         resolver.setTemplateMode(TemplateMode.HTML);
-        resolver.setCacheable(false);
+
+        resolver.setCacheable(true);
+        resolver.setCacheablePatterns(Set.of(MessageFormat.format("/{0}/**", Properties.getViewVersion())));
+
         resolver.setCheckExistence(false);
         return resolver;
     }
@@ -194,7 +190,7 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
         HandlerFunction<ServerResponse> indexHandlerFunction = (request) -> {
             // final Map<String, Object> model = Collections.singletonMap(CsrfToken.class.getName(), request.exchange().getAttribute(CsrfToken.class.getName()));
             return ServerResponse.ok().contentType(MediaType.TEXT_HTML).render("index", request.exchange()*/
-/*, model*//*
+    /*, model*//*
 );
         };
 
