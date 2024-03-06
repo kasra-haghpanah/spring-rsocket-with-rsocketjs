@@ -1,9 +1,12 @@
 package com.council.election.ddd.controller.rest;
 
 import com.council.election.configuration.property.Properties;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,13 +21,14 @@ import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 
 @Controller
+@Validated
 public class ResourceController {
 
     // https://www.baeldung.com/spring-webflux-databufferlimitexception
     @RequestMapping(value = "/resource/{version}/**", method = RequestMethod.GET)
     @ResponseBody
     public Mono<Void> resource(
-            @PathVariable("version") String version,
+            @Valid @PathVariable("version") @Pattern(regexp = "(/)*(\\d){1,2}\\.(\\d){1,2}\\.(\\d){1,2}/(.)*") String version,
             ServerWebExchange exchange
     ) {
 
@@ -55,7 +59,7 @@ public class ResourceController {
             uri = path.substring(path.indexOf(version) + version.length());
         }
 
-        uri = uri.replaceAll("/\\*\\*","");
+        uri = uri.replaceAll("/\\*\\*", "");
 
         return WebClient
                 .builder()
