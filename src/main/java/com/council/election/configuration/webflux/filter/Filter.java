@@ -54,8 +54,13 @@ public class Filter implements WebFilter, WebExceptionHandler {
 
         long startime = System.currentTimeMillis();
         Log log = Log.create(this.objectMapper, getLogger());
-        exchange.getResponse().getHeaders().set("server", serverName);
-        exchange.getResponse().getHeaders().set("X-Powered-By", poweredBy);
+        try {
+            exchange.getResponse().getHeaders().set("server", serverName);
+            exchange.getResponse().getHeaders().set("X-Powered-By", poweredBy);
+        }catch (Exception e){
+
+        }
+
         log.setStackTrace(throwable);
 
         HttpException httpException;

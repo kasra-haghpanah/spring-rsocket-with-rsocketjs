@@ -1,5 +1,7 @@
 package com.council.election.configuration.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,8 @@ import reactor.core.publisher.Mono;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpException extends RuntimeException {
 
@@ -16,7 +20,16 @@ public class HttpException extends RuntimeException {
     private final HttpStatus httpStatus;
 
     public HttpException(String message, HttpStatus httpStatus) {
-        this.message = String.format("{\"message\": \"%s\"}", message);
+        Map<String, String> payload = new HashMap<>();
+        payload.put("message", message);
+
+        String json = "";
+        try {
+            json = new ObjectMapper().writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            //throw new RuntimeException(e);
+        }
+        this.message = json;
         this.httpStatus = httpStatus;
     }
 
