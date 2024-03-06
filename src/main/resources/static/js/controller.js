@@ -34,7 +34,7 @@ String.prototype.escapeHtml = function () {
 
 demoApp.run(['$rootScope', '$translate', '$http', '$location', async function ($rootScope, $translate, $http, $location) {
 
-    $rootScope.viewVersion = document.getElementsByTagName("view-version").item(0).textContent;
+    $rootScope.viewVersion = document.getElementById("view-version").textContent;
     $rootScope.isUploading = false;
     $rootScope.level = -1;
     $rootScope.title = "";

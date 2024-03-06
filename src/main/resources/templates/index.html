@@ -12,7 +12,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{'ElectionWebSite' | translate}}</title>
     <meta name="description" th:content="${path}">
-    <view-version style="visibility:hidden;" th:text="${view_version}"></view-version>
+    <div id="view-version" style="visibility:hidden;" th:text="${view_version}"></div>
     <link rel="shortcut icon" th:href="@{'/resource/'+${view_version}+'/images/favicon.ico'}"/>
     <link media="all" th:href="@{'/resource/'+${view_version}+'/css/bootstrap.min.css'}" rel="stylesheet"/>
     <link media="all" th:href="@{'/resource/'+${view_version}+'/css/docs.min.css'}" rel="stylesheet"/>

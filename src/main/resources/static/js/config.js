@@ -29,7 +29,7 @@ demoApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDel
         'http://localhost:8095/**'
     ]);
 
-    var viewVersion = document.getElementsByTagName("view-version").item(0).textContent;
+    var viewVersion = document.getElementById("view-version").textContent;
 
     $routeProvider
         .when(`/ng/signin`, {
