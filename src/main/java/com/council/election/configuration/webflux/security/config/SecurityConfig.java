@@ -2,7 +2,6 @@ package com.council.election.configuration.webflux.security.config;
 
 import com.council.election.configuration.exception.HttpException;
 import com.council.election.configuration.log.JsonUtil;
-import com.council.election.configuration.property.Properties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +28,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -109,7 +107,7 @@ public class SecurityConfig implements ServerSecurityContextRepository {
     }
 
     @Bean
-    public SecurityWebFilterChain securitygWebFilterChain(ServerHttpSecurity http) {
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .exceptionHandling(exceptionHandlingSpec -> {
 
@@ -176,19 +174,19 @@ public class SecurityConfig implements ServerSecurityContextRepository {
                             .permitAll()
 
                             .pathMatchers(HttpMethod.GET,
-                                    MessageFormat.format("/{0}/js/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/lib/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/css/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/fonts/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/view/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/favicon.ico", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/css/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/custom/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/fonts/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/{0}/images/**", Properties.getViewVersion()),
-                                    MessageFormat.format("/images/**", Properties.getViewVersion()),
+                                    "/js/**",
+                                    "/lib/**",
+                                    "/css/**",
+                                    "/fonts/**",
+                                    "/view/**",
+                                    "/favicon.ico",
+                                    "/css/**",
+                                    "/custom/**",
+                                    "/fonts/**",
+                                    "/images/**",
                                     "/logout", "/active/**",
-                                    "/ng/signin", "/ng/forgot", "/ng/signup", "/ng/change/password/**", "/ng/tree", "/ng/content"
+                                    "/ng/signin", "/ng/forgot", "/ng/signup", "/ng/change/password/**", "/ng/tree", "/ng/content",
+                                    "/resource/**"
                             ).permitAll()
                             .pathMatchers(HttpMethod.PUT, "/signup", "/signin").permitAll()
                             //.pathMatchers(HttpMethod.GET, "/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")

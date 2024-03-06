@@ -3,20 +3,17 @@ package com.council.election.ddd.controller.rest;
 import com.council.election.configuration.property.Properties;
 import com.council.election.configuration.webflux.security.config.JwtConfig;
 import com.council.election.configuration.webflux.security.dto.JwtResponse;
-import com.council.election.ddd.client.rest.SMSClient;
 import com.council.election.ddd.dto.UserDTO;
 import com.council.election.ddd.model.User;
 import com.council.election.ddd.service.UserService;
 import com.council.election.ddd.utility.Cookie;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.http.server.RequestPath;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +21,11 @@ import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Controller

@@ -9,7 +9,7 @@
                     <img
                             ng-if="item.fileId != null && item.contentType.indexOf('video') > -1 && item.isDownloaded != true"
                             alt="video"
-                            ng-src="/{{viewVersion}}/images/video.png"
+                            ng-src="/resource/{{viewVersion}}/images/video.png"
                             ng-click="download(item)"
                             style="width: 100%;height: 500px;cursor: pointer;"
                     />
@@ -20,7 +20,7 @@
                             ng-focus="pauseVideo(item)"
                             playsinline="playsinline"
                             preload="metadata"
-                            ng-attr-poster="/{{viewVersion}}/images/video.png" class="col-12"
+                            ng-attr-poster="/resource/{{viewVersion}}/images/video.png" class="col-12"
                             preload="metadata"
                             controls
                             type="{{item.contentType}}" ng-src="{{item.content}}"
@@ -30,7 +30,7 @@
                     <img
                             ng-if="item.fileId != null && item.contentType.indexOf('audio') > -1 && item.isDownloaded != true"
                             alt="audio"
-                            ng-src="/{{viewVersion}}/images/audio.jpg"
+                            ng-src="/resource/{{viewVersion}}/images/audio.jpg"
                             ng-click="download(item)"
                             style="width: 100%;height: 500px;cursor: pointer;"
                     />
@@ -38,7 +38,7 @@
                            preload="metadata"
                            id="{{item.id}}"
                            ng-focus="pauseVideo(item)"
-                           ng-attr-poster="/{{viewVersion}}/images/audio.jpg"
+                           ng-attr-poster="/resource/{{viewVersion}}/images/audio.jpg"
                            class="col-12"
                            preload="metadata"
                            controls
@@ -48,7 +48,7 @@
                         <img
                                 ng-if="item.fileId != null && item.contentType.indexOf('pdf') > -1 && item.isDownloaded != true"
                                 alt="pdf"
-                                ng-src="/{{viewVersion}}/images/pdf.png"
+                                ng-src="/resource/{{viewVersion}}/images/pdf.png"
                                 ng-click="download(item)"
                                 style="width: 100%;height: 500px;cursor: pointer;"
                         />

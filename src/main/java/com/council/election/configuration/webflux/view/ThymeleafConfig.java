@@ -41,27 +41,25 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
     public ThymeleafConfig() {
 
         resourceHandler = new String[]{
-                MessageFormat.format("/{0}/css/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/custom/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/fonts/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/images/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/js/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/lib/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/view/**", Properties.getViewVersion()),
-                MessageFormat.format("/{0}/favicon.**", Properties.getViewVersion()),
+                "/css/**",
+                "/custom/**",
+                "/fonts/**",
+                "/images/**",
+                "/js/**",
+                "/lib/**",
+                "/view/**",
                 "/favicon.**"
         };
 
         resourceLocations = new String[]{
-                MessageFormat.format("classpath:static/{0}/css/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/custom/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/fonts/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/js/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/lib/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/view/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/", Properties.getViewVersion()),
-                MessageFormat.format("classpath:static/{0}/images/", Properties.getViewVersion()),
-                "classpath:static/images/"
+               "classpath:static/css/",
+               "classpath:static/custom/",
+               "classpath:static/fonts/",
+               "classpath:static/js/",
+               "classpath:static/lib/",
+               "classpath:static/view/",
+               "classpath:static/",
+               "classpath:static/images/"
         };
 
     }
@@ -96,7 +94,7 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
         resolver.setTemplateMode(TemplateMode.HTML);
 
         //resolver.setCacheable(true);
-        //resolver.setCacheablePatterns(Set.of(MessageFormat.format("/{0}/**", Properties.getViewVersion())));
+        //resolver.setCacheablePatterns(Set.of("/**"));
 
         resolver.setCheckExistence(false);
         return resolver;
@@ -133,42 +131,31 @@ public class ThymeleafConfig implements WebFluxConfigurer /*extends DefaultError
     }
 
 
-/*
-    @Bean
+/*    @Bean
     public RouterFunction<ServerResponse> route(WebFluxConfig welcomeHandler) {
 
         HandlerFunction<ServerResponse> indexHandlerFunction = (request) -> {
             // final Map<String, Object> model = Collections.singletonMap(CsrfToken.class.getName(), request.exchange().getAttribute(CsrfToken.class.getName()));
-            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).render("index", request.exchange()*/
-    /*, model*//*
-);
+            return ServerResponse.ok().contentType(MediaType.TEXT_HTML).render("index", request.exchange(), model);
         };
-
 
         return RouterFunctions
                 .route(GET("/index").and(RequestPredicates.accept(MediaType.TEXT_HTML)), indexHandlerFunction)
                 .andRoute(GET("/").and(RequestPredicates.accept(MediaType.TEXT_HTML)), indexHandlerFunction)
-                */
-/*.Filter((req, resHandler) ->
+.Filter((req, resHandler) ->
                         req.exchange()
                                 .getAttributeOrDefault(
                                         CsrfToken.class.getName(),
                                         Mono.empty().ofType(CsrfToken.class)
                                 )
                                 .flatMap(csrfToken -> {
-
                                     req.exchange()
                                             .getAttributes()
                                             .put(csrfToken.getParameterName(), csrfToken);
                                     return resHandler.handle(req);
                                 })
-
-                )*//*
-;
-
-
-    }
-*/
+                );
+    }*/
 
 
 }

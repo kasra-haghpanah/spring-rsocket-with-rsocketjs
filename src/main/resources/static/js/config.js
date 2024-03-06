@@ -34,27 +34,27 @@ demoApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDel
     $routeProvider
         .when(`/ng/signin`, {
             controller: `SigninController`,
-            templateUrl: `../${viewVersion}/view/signin.htm`
+            templateUrl: `../resource/${viewVersion}/view/signin.htm`
         })
         .when(`/ng/forgot`, {
             controller: 'SignupController',
-            templateUrl: `../${viewVersion}/view/forgot.htm`
+            templateUrl: `../resource/${viewVersion}/view/forgot.htm`
         })
         .when(`/ng/signup`, {
             controller: `SignupController`,
-            templateUrl: `../${viewVersion}/view/signup.htm`
+            templateUrl: `../resource/${viewVersion}/view/signup.htm`
         })
         .when(`/ng/change/password/:phone/:code`, {
             controller: `SignupController`,
-            templateUrl: `../${viewVersion}/view/change.htm`
+            templateUrl: `../resource/${viewVersion}/view/change.htm`
         })
         .when(`/ng/tree`, {
             controller: `TreeController`,
-            templateUrl: `../${viewVersion}/view/tree.htm`
+            templateUrl: `../resource/${viewVersion}/view/tree.htm`
         })
         .when(`/ng/content`, {
             controller: `ContentController`,
-            templateUrl: `../${viewVersion}/view/content.htm`
+            templateUrl: `../resource/${viewVersion}/view/content.htm`
         })
         .otherwise({
             redirectTo: '/ng/signin'
