@@ -28,7 +28,7 @@ public class ResourceController {
     @RequestMapping(value = "/resource/{version}/**", method = RequestMethod.GET)
     @ResponseBody
     public Mono<Void> resource(
-            @Valid @PathVariable("version") @Pattern(regexp = "(/)*(\\d){1,2}\\.(\\d){1,2}\\.(\\d){1,2}/(.)*") String version,
+            @Valid @PathVariable("version") @Pattern(regexp = "(\\/)*((\\d){1,2})\\.((\\d){1,2})\\.((\\d){1,2})(.)*") String version,
             ServerWebExchange exchange
     ) {
 
