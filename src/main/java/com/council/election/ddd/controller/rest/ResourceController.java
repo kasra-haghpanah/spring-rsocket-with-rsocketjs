@@ -2,7 +2,6 @@ package com.council.election.ddd.controller.rest;
 
 import com.council.election.configuration.property.Properties;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
-import java.util.concurrent.TimeUnit;
 
 @Controller
 public class ResourceController {
