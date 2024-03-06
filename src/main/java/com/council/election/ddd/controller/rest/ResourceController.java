@@ -75,7 +75,7 @@ public class ResourceController {
                     clientResponse.headers().asHttpHeaders().forEach((key, valueAsList) -> {
                         exchange.getResponse().getHeaders().addAll(key, valueAsList);
                     });
-                    exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(360, TimeUnit.SECONDS));
+                    //exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(360, TimeUnit.SECONDS));
                     return exchange.getResponse().writeWith(clientResponse.bodyToFlux(DataBuffer.class));
 
                 });
