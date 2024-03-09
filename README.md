@@ -30,7 +30,7 @@ This application works on Spring boot 3.0.0 or later and JDK 17 or later
 - [x] [bootstrap](https://github.com/twbs)
 
 
-# References
+# Prerequisites
 
 First, install MongoDB 4.2 or later on your system
 
