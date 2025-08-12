@@ -85,7 +85,7 @@ public class OpenApiConfigs {
             operation.addParametersItem(headerParameter);
 
 
-            Parameter queryParameter = new Parameter().in(ParameterIn.QUERY.name().toString()).required(false).
+            Parameter queryParameter = new Parameter().in(ParameterIn.QUERY.toString()).required(false).
                     schema(
                             new StringSchema()._default("export")._enum(List.of("import", "export"))._default("export")
                     )
