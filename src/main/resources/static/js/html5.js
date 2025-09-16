@@ -302,7 +302,7 @@
                         data.content = data.content.buffer;
                     }
                     var isArrayBuffer = data.content.constructor === ArrayBuffer;
-                    if (isArrayBuffer) {
+                    if (isArrayBuffer || data.content.constructor === File) {
                         data.content = this.toBlob(data.content, data.contentType);
                         isArrayBuffer = false;
                     }
